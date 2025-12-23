@@ -1,13 +1,17 @@
 import React, { useState } from "react";
+import * as THREE from "three";
+import { Suspense } from "react";
+import { Html } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
-
+import { Environment } from "@react-three/drei";
+import { CameraLight } from "../../CameraLight";
 import "./HeroSection.css";
 import { Model } from "../../Model/Model";
 import { Link } from "react-router-dom";
 
 const HeroSection = () => {
-  const [tshirtColor, setTshirtColor] = useState("red");
+  const [tshirtColor, setTshirtColor] = useState("#E5E5E5");
 
   const changeColor = (color) => {
     setTshirtColor(color);
@@ -36,43 +40,68 @@ const HeroSection = () => {
         <div className="sectionright">
           <Canvas
             className="canvasModel"
-            camera={{ position: [0, 5, 15], fov: 50 }}
+            dpr={[1, 1.5]}
+            camera={{ position: [0, 3, 8], fov: 45 }}
+            frameloop="demand"
+            onCreated={({ gl }) => {
+              gl.toneMapping = THREE.ACESFilmicToneMapping;
+              gl.outputColorSpace = THREE.SRGBColorSpace;
+              gl.physicallyCorrectLights = true;
+              gl.toneMappingExposure = 1.35;
+            }}
           >
-            <ambientLight intensity={0.5} />
-            <directionalLight
-              position={[10, 10, 5]}
-              intensity={2.5}
-              color={"white"}
-            />
+            <Suspense
+              fallback={
+                <Html center>
+                  <div className="loader">Loading...</div>
+                </Html>
+              }
+            >
+              <CameraLight />
 
-            <OrbitControls
-              enableZoom={false}
-              enablePan={false}
-              minAzimuthAngle={-Infinity}
-              maxAzimuthAngle={Infinity}
-              maxPolarAngle={Math.PI / 2}
-              minPolarAngle={Math.PI / 2}
-            />
+              <hemisphereLight intensity={1.6} />
+              <directionalLight position={[0, 0, 10]} intensity={1.2} />
+              <directionalLight position={[5, 5, 5]} intensity={2} />
+              <directionalLight position={[-5, 3, -5]} intensity={2.5} />
 
-            <Model color={tshirtColor} />
+              <spotLight position={[0, 5, 6]} intensity={1.2} angle={0.6} />
+
+              <Environment preset="studio" />
+
+              <OrbitControls enableZoom={false} enablePan={false} />
+
+              <Model color={tshirtColor} />
+            </Suspense>
           </Canvas>
+
           <div className="heroColorBtn">
+            {/* Black Titanium */}
             <button
-              onClick={() => changeColor("#353933")}
-              style={{ backgroundColor: "#353933" }}
-            ></button>
+              onClick={() => changeColor("#1C1C1E")}
+              style={{ backgroundColor: "#1C1C1E" }}
+              title="Black Titanium"
+            />
+
+            {/* Natural Titanium */}
             <button
-              onClick={() => changeColor("#EFBD4E")}
-              style={{ backgroundColor: "#EFBD4E" }}
-            ></button>
+              onClick={() => changeColor("#8E8E8E")}
+              style={{ backgroundColor: "#8E8E8E" }}
+              title="Natural Titanium"
+            />
+
+            {/* Silver / White Titanium */}
             <button
-              onClick={() => changeColor("#726DE7")}
-              style={{ backgroundColor: "#726DE7" }}
-            ></button>
+              onClick={() => changeColor("#E5E5E5")}
+              style={{ backgroundColor: "#E5E5E5" }}
+              title="Silver Titanium"
+            />
+
+            {/* New Pro Color – Blue Titanium */}
             <button
-              onClick={() => changeColor("red")}
-              style={{ backgroundColor: "red" }}
-            ></button>
+              onClick={() => changeColor("#2F3A4A")}
+              style={{ backgroundColor: "#2F3A4A" }}
+              title="Blue Titanium"
+            />
           </div>
         </div>
       </div>

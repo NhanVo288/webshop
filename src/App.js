@@ -29,7 +29,7 @@ const ShoppingCart = lazy(() =>
 );
 const NotFound = lazy(() => import("./Pages/NotFound"));
 
-const Popup = lazy(() => import("./Components/PopupBanner/Popup"));
+// const Popup = lazy(() => import("./Components/PopupBanner/Popup"));
 
 const App = () => {
   return (
@@ -37,9 +37,9 @@ const App = () => {
       <ScrollToTop />
       <Header />
 
-      <Suspense fallback={null}>
+      {/* <Suspense fallback={null}>
         <Popup />
-      </Suspense>
+      </Suspense> */}
 
       <main
         style={{
