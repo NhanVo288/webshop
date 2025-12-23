@@ -1,51 +1,76 @@
-import React from "react";
+import React, { Suspense, lazy } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import "./App.css";
 
-import Home from "../src/Pages/Home";
-import About from "../src/Pages/About";
-import Shop from "../src/Pages/Shop";
-import Contact from "../src/Pages/Contact";
-import Blog from "../src/Pages/Blog";
-import Header from "../src/Components/Header/Navbar";
-import Footer from "../src/Components/Footer/Footer";
-import ProductDetails from "./Pages/ProductDetails";
-import NotFound from "./Pages/NotFound";
+import Header from "./Components/Header/Navbar";
+import Footer from "./Components/Footer/Footer";
 import ScrollToTop from "./Components/ScrollButton/ScrollToTop";
-import Authentication from "./Pages/Authentication";
-import ResetPass from "./Components/Authentication/Reset/ResetPass";
-import BlogDetails from "./Components/Blog/BlogDetails/BlogDetails";
-import TermsConditions from "./Pages/TermsConditions";
-import ShoppingCart from "./Components/ShoppingCart/ShoppingCart";
-import Popup from "./Components/PopupBanner/Popup";
+import Loader from "./Components/Loader/Loader.jsx";
 import { Toaster } from "react-hot-toast";
+
+import Home from "./Pages/Home";
+
+const About = lazy(() => import("./Pages/About"));
+const Shop = lazy(() => import("./Pages/Shop"));
+const Contact = lazy(() => import("./Pages/Contact"));
+const Blog = lazy(() => import("./Pages/Blog"));
+const ProductDetails = lazy(() => import("./Pages/ProductDetails"));
+const Authentication = lazy(() => import("./Pages/Authentication"));
+const ResetPass = lazy(() =>
+  import("./Components/Authentication/Reset/ResetPass")
+);
+const BlogDetails = lazy(() =>
+  import("./Components/Blog/BlogDetails/BlogDetails")
+);
+const TermsConditions = lazy(() => import("./Pages/TermsConditions"));
+const ShoppingCart = lazy(() =>
+  import("./Components/ShoppingCart/ShoppingCart")
+);
+const NotFound = lazy(() => import("./Pages/NotFound"));
+
+const Popup = lazy(() => import("./Components/PopupBanner/Popup"));
 
 const App = () => {
   return (
-    <>
-      <Popup />
+    <BrowserRouter>
       <ScrollToTop />
-      <BrowserRouter>
-        <Header />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/shop" element={<Shop />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/blog" element={<Blog />} />
-          <Route path="/product" element={<ProductDetails />} />
-          <Route path="/loginSignUp" element={<Authentication />} />
-          <Route path="/resetPassword" element={<ResetPass />} />
-          <Route path="/BlogDetails" element={<BlogDetails />} />
-          <Route path="/terms" element={<TermsConditions />} />
-          <Route path="/cart" element={<ShoppingCart />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-        <Footer />
-        <Toaster />
-      </BrowserRouter>
-    </>
+      <Header />
+
+      <Suspense fallback={null}>
+        <Popup />
+      </Suspense>
+
+      <main
+        style={{
+          minHeight: "calc(100vh - 400px)",
+        }}
+      >
+        <Suspense fallback={<Loader />}>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/shop" element={<Shop />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/blog" element={<Blog />} />
+
+            <Route path="/product" element={<ProductDetails />} />
+            <Route path="/blog" element={<BlogDetails />} />
+
+            <Route path="/loginSignup" element={<Authentication />} />
+            <Route path="/reset-password" element={<ResetPass />} />
+
+            <Route path="/terms" element={<TermsConditions />} />
+            <Route path="/cart" element={<ShoppingCart />} />
+
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </Suspense>
+      </main>
+
+      <Footer />
+      <Toaster />
+    </BrowserRouter>
   );
 };
 
