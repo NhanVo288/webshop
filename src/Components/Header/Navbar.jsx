@@ -22,7 +22,6 @@ import UserMenu from "./UserMenu";
 
 const Navbar = () => {
   const cart = useSelector((state) => state.cart);
-  const { user } = useSelector((state) => state.auth);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const toggleMobileMenu = () => {
