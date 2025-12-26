@@ -5,7 +5,6 @@ import { useSelector } from "react-redux";
 
 import logo from "../../Assets/logo.png";
 import { Link } from "react-router-dom";
-
 import { RiMenu2Line } from "react-icons/ri";
 import { FiSearch } from "react-icons/fi";
 import { FaRegUser } from "react-icons/fa6";
@@ -19,10 +18,11 @@ import { FaYoutube } from "react-icons/fa";
 import { FaPinterest } from "react-icons/fa";
 
 import Badge from "@mui/material/Badge";
+import UserMenu from "./UserMenu";
 
 const Navbar = () => {
   const cart = useSelector((state) => state.cart);
-
+  const { user } = useSelector((state) => state.auth);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const toggleMobileMenu = () => {
@@ -79,9 +79,7 @@ const Navbar = () => {
         </div>
         <div className="iconContainer">
           <FiSearch size={22} onClick={scrollToTop} />
-          <Link to="/loginSignUp" onClick={scrollToTop}>
-            <FaRegUser size={22} />
-          </Link>
+          <UserMenu />
           <Link to="/cart" onClick={scrollToTop}>
             <Badge
               badgeContent={cart.items.length === 0 ? "0" : cart.items.length}

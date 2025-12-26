@@ -244,3 +244,26 @@
 .mobile-menuSocial_links svg {
   cursor: pointer;
 }
+
+.userDropdown {
+  position: absolute;
+  top: 130%;
+  right: 0;
+  width: 180px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 8px 25px rgba(0,0,0,.12);
+  padding: 12px;
+  z-index: 1000;
+}
+
+.userMenuWrapper {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.userIcon {
+  cursor: pointer;
+}
+

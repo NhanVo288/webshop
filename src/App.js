@@ -1,4 +1,4 @@
-import React, { Suspense, lazy } from "react";
+import React, { Suspense, lazy, useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import "./App.css";
@@ -8,9 +8,10 @@ import Footer from "./Components/Footer/Footer";
 import ScrollToTop from "./Components/ScrollButton/ScrollToTop";
 import Loader from "./Components/Loader/Loader.jsx";
 import { Toaster } from "react-hot-toast";
-
+import { useSelector, useDispatch } from "react-redux";
 import Home from "./Pages/Home";
-
+import { CheckAuth } from "./Features/Auth/auth.thunk.js";
+import PublicRoute from "./Components/Routes/ProtectRoute.js";
 const About = lazy(() => import("./Pages/About"));
 const Shop = lazy(() => import("./Pages/Shop"));
 const Contact = lazy(() => import("./Pages/Contact"));
@@ -32,6 +33,13 @@ const NotFound = lazy(() => import("./Pages/NotFound"));
 // const Popup = lazy(() => import("./Components/PopupBanner/Popup"));
 
 const App = () => {
+  const { user, isCheckingAuth } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(CheckAuth());
+  }, [dispatch]);
+  if (isCheckingAuth) return null;
+
   return (
     <BrowserRouter>
       <ScrollToTop />
@@ -56,8 +64,14 @@ const App = () => {
 
             <Route path="/product" element={<ProductDetails />} />
             <Route path="/blog" element={<BlogDetails />} />
-
-            <Route path="/loginSignup" element={<Authentication />} />
+            <Route
+              path="/loginSignup"
+              element={
+                <PublicRoute>
+                  <Authentication />
+                </PublicRoute>
+              }
+            />
             <Route path="/reset-password" element={<ResetPass />} />
 
             <Route path="/terms" element={<TermsConditions />} />
