@@ -33,7 +33,7 @@ const NotFound = lazy(() => import("./Pages/NotFound"));
 // const Popup = lazy(() => import("./Components/PopupBanner/Popup"));
 
 const App = () => {
-  const { user, isCheckingAuth } = useSelector((state) => state.auth);
+  const { isCheckingAuth } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(CheckAuth());
