@@ -23,6 +23,7 @@ import UserMenu from "./UserMenu";
 const Navbar = () => {
   const cart = useSelector((state) => state.cart);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { user } = useSelector((state) => state.auth);
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
@@ -73,6 +74,13 @@ const Navbar = () => {
                   CONTACT
                 </Link>
               </li>
+              {user && (
+                <li>
+                <Link to="https://admin-36.up.railway.app" onClick={scrollToTop}>
+                  CRM
+                </Link>
+              </li>
+              )}
             </ul>
           </div>
         </div>
