@@ -17,7 +17,7 @@ import { fetchProducts } from "../../../Features/Product/productSlice";
 
 const ShopDetails = () => {
   const dispatch = useDispatch();
-  const { list, loading} = useSelector(state => state.product)
+  // const { list, loading} = useSelector(state => state.product)
   const [wishList, setWishList] = useState({});
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 

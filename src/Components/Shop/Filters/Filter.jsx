@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useMemo } from "react";
 import "./Filter.css";
 import { debounce } from "../../../utils/debounce";
 import Accordion from "@mui/material/Accordion";
@@ -10,8 +10,8 @@ import Slider from "@mui/material/Slider";
 
 const Filter = ({ onFilter }) => {
   const [priceRange, setPriceRange] = useState([0, 20000000]);
-  const [selectedColors, setSelectedColors] = useState([]);
-  const [selectedSizes, setSelectedSizes] = useState([]);
+  // const [selectedColors, setSelectedColors] = useState([]);
+  // const [selectedSizes, setSelectedSizes] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedBrands, setSelectedBrands] = useState([]);
 
@@ -25,27 +25,36 @@ const Filter = ({ onFilter }) => {
     { name: "Zara", count: 48 },
   ];
 
-  const filterColors = [
-    "#0B2472",
-    "#D6BB4F",
-    "#282828",
-    "#B0D6E8",
-    "#9C7539",
-    "#D29B47",
-    "#E5AE95",
-    "#D76B67",
-    "#BABABA",
-    "#BFDCC4",
-  ];
+  // const filterColors = [
+  //   "#0B2472",
+  //   "#D6BB4F",
+  //   "#282828",
+  //   "#B0D6E8",
+  //   "#9C7539",
+  //   "#D29B47",
+  //   "#E5AE95",
+  //   "#D76B67",
+  //   "#BABABA",
+  //   "#BFDCC4",
+  // ];
 
-  const filterSizes = ["XS", "S", "M", "L", "XL", "XXL"];
+  // const filterSizes = ["XS", "S", "M", "L", "XL", "XXL"];
 
-  // debounce 
-  const emitFilter = useCallback(
-    debounce((filters) => {
-      onFilter(filters);
-    }, 400),
+  // debounce memoized
+  const debouncedOnFilter = useMemo(
+    () =>
+      debounce((filters) => {
+        onFilter(filters);
+      }, 400),
     [onFilter]
+  );
+
+  // dùng callback inline để gọi debounced function
+  const emitFilter = useCallback(
+    (filters) => {
+      debouncedOnFilter(filters);
+    },
+    [debouncedOnFilter]
   );
 
   // helper build params từ giá trị mới
@@ -53,12 +62,11 @@ const Filter = ({ onFilter }) => {
     const params = {};
     if (brands.length) params.brand = brands.join(",");
     if (price) params.price_lte = price[1];
-    if (colors.length) params.color = colors.join(",");
-    if (sizes.length) params.size = sizes.join(",");
+    // if (colors.length) params.color = colors.join(",");
+    // if (sizes.length) params.size = sizes.join(",");
     return params;
   };
 
- 
   const handleBrandChange = (brand) => {
     const newBrands = selectedBrands.includes(brand)
       ? selectedBrands.filter((b) => b !== brand)
@@ -68,44 +76,44 @@ const Filter = ({ onFilter }) => {
     emitFilter(
       buildParams({
         brands: newBrands,
-        colors: selectedColors,
-        sizes: selectedSizes,
+        // colors: selectedColors,
+        // sizes: selectedSizes,
         price: priceRange,
       })
     );
   };
 
-  const handleColorChange = (color) => {
-    const newColors = selectedColors.includes(color)
-      ? selectedColors.filter((c) => c !== color)
-      : [...selectedColors, color];
+  // const handleColorChange = (color) => {
+  //   const newColors = selectedColors.includes(color)
+  //     ? selectedColors.filter((c) => c !== color)
+  //     : [...selectedColors, color];
 
-    setSelectedColors(newColors);
-    emitFilter(
-      buildParams({
-        brands: selectedBrands,
-        colors: newColors,
-        sizes: selectedSizes,
-        price: priceRange,
-      })
-    );
-  };
+  //   setSelectedColors(newColors);
+  //   emitFilter(
+  //     buildParams({
+  //       brands: selectedBrands,
+  //       colors: newColors,
+  //       sizes: selectedSizes,
+  //       price: priceRange,
+  //     })
+  //   );
+  // };
 
-  const handleSizeChange = (size) => {
-    const newSizes = selectedSizes.includes(size)
-      ? selectedSizes.filter((s) => s !== size)
-      : [...selectedSizes, size];
+  // const handleSizeChange = (size) => {
+  //   const newSizes = selectedSizes.includes(size)
+  //     ? selectedSizes.filter((s) => s !== size)
+  //     : [...selectedSizes, size];
 
-    setSelectedSizes(newSizes);
-    emitFilter(
-      buildParams({
-        brands: selectedBrands,
-        colors: selectedColors,
-        sizes: newSizes,
-        price: priceRange,
-      })
-    );
-  };
+  //   setSelectedSizes(newSizes);
+  //   emitFilter(
+  //     buildParams({
+  //       brands: selectedBrands,
+  //       colors: selectedColors,
+  //       sizes: newSizes,
+  //       price: priceRange,
+  //     })
+  //   );
+  // };
 
   const handlePriceChange = (event, newValue) => {
     setPriceRange(newValue);
@@ -116,8 +124,8 @@ const Filter = ({ onFilter }) => {
     emitFilter(
       buildParams({
         brands: selectedBrands,
-        colors: selectedColors,
-        sizes: selectedSizes,
+        // colors: selectedColors,
+        // sizes: selectedSizes,
         price: value,
       })
     );
@@ -127,7 +135,6 @@ const Filter = ({ onFilter }) => {
     setSearchTerm(e.target.value);
   };
 
-  
   const filteredBrands = brandsData.filter((b) =>
     b.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
