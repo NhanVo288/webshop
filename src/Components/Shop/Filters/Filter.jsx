@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import "./Filter.css";
-
+import { debounce } from "../../../utils/debounce";
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
@@ -8,13 +8,14 @@ import { IoIosArrowDown } from "react-icons/io";
 import { BiSearch } from "react-icons/bi";
 import Slider from "@mui/material/Slider";
 
-const Filter = () => {
-  const [value, setValue] = useState([20, 69]);
-
+const Filter = ({ onFilter }) => {
+  const [priceRange, setPriceRange] = useState([0, 20000000]);
   const [selectedColors, setSelectedColors] = useState([]);
   const [selectedSizes, setSelectedSizes] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [brandsData] = useState([
+  const [selectedBrands, setSelectedBrands] = useState([]);
+
+  const brandsData = [
     { name: "Adidas", count: 2 },
     { name: "Balmain", count: 7 },
     { name: "Balenciaga", count: 10 },
@@ -22,43 +23,6 @@ const Filter = () => {
     { name: "Kenzo", count: 95 },
     { name: "Givenchy", count: 1092 },
     { name: "Zara", count: 48 },
-  ]);
-
-  const handleColorChange = (color) => {
-    setSelectedColors((prevColors) =>
-      prevColors.includes(color)
-        ? prevColors.filter((c) => c !== color)
-        : [...prevColors, color]
-    );
-  };
-
-  const handleSizeChange = (size) => {
-    setSelectedSizes((prevSizes) =>
-      prevSizes.includes(size)
-        ? prevSizes.filter((s) => s !== size)
-        : [...prevSizes, size]
-    );
-  };
-
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
-
-  const filteredBrands = brandsData.filter((brand) =>
-    brand.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  const filterCategories = [
-    "Dresses",
-    "Shorts",
-    "Sweatshirts",
-    "Swimwear",
-    "Jackets",
-    "T-Shirts & Tops",
-    "Jeans",
-    "Trousers",
-    "Men",
-    "Jumpers & Cardigans",
   ];
 
   const filterColors = [
@@ -76,174 +40,196 @@ const Filter = () => {
 
   const filterSizes = ["XS", "S", "M", "L", "XL", "XXL"];
 
+  // debounce 
+  const emitFilter = useCallback(
+    debounce((filters) => {
+      onFilter(filters);
+    }, 400),
+    [onFilter]
+  );
+
+  // helper build params từ giá trị mới
+  const buildParams = ({ brands, colors, sizes, price }) => {
+    const params = {};
+    if (brands.length) params.brand = brands.join(",");
+    if (price) params.price_lte = price[1];
+    if (colors.length) params.color = colors.join(",");
+    if (sizes.length) params.size = sizes.join(",");
+    return params;
+  };
+
+ 
+  const handleBrandChange = (brand) => {
+    const newBrands = selectedBrands.includes(brand)
+      ? selectedBrands.filter((b) => b !== brand)
+      : [...selectedBrands, brand];
+
+    setSelectedBrands(newBrands);
+    emitFilter(
+      buildParams({
+        brands: newBrands,
+        colors: selectedColors,
+        sizes: selectedSizes,
+        price: priceRange,
+      })
+    );
+  };
+
+  const handleColorChange = (color) => {
+    const newColors = selectedColors.includes(color)
+      ? selectedColors.filter((c) => c !== color)
+      : [...selectedColors, color];
+
+    setSelectedColors(newColors);
+    emitFilter(
+      buildParams({
+        brands: selectedBrands,
+        colors: newColors,
+        sizes: selectedSizes,
+        price: priceRange,
+      })
+    );
+  };
+
+  const handleSizeChange = (size) => {
+    const newSizes = selectedSizes.includes(size)
+      ? selectedSizes.filter((s) => s !== size)
+      : [...selectedSizes, size];
+
+    setSelectedSizes(newSizes);
+    emitFilter(
+      buildParams({
+        brands: selectedBrands,
+        colors: selectedColors,
+        sizes: newSizes,
+        price: priceRange,
+      })
+    );
+  };
+
+  const handlePriceChange = (event, newValue) => {
+    setPriceRange(newValue);
+  };
+
+  const handlePriceCommitted = (event, value) => {
+    setPriceRange(value);
+    emitFilter(
+      buildParams({
+        brands: selectedBrands,
+        colors: selectedColors,
+        sizes: selectedSizes,
+        price: value,
+      })
+    );
+  };
+
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
+  };
+
+  
+  const filteredBrands = brandsData.filter((b) =>
+    b.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
-    <div>
-      <div className="filterSection">
-        <div className="filterCategories">
-          <Accordion defaultExpanded disableGutters elevation={0}>
-            <AccordionSummary
-              expandIcon={<IoIosArrowDown size={20} />}
-              aria-controls="panel1-content"
-              id="panel1-header"
-              sx={{ padding: 0, marginBottom: 2 }}
-            >
-              <h5 className="filterHeading">Product Categories</h5>
-            </AccordionSummary>
-            <AccordionDetails sx={{ padding: 0 }}>
-              {filterCategories.map((category, index) => (
-                <p key={index}>{category}</p>
-              ))}
-            </AccordionDetails>
-          </Accordion>
-        </div>
-        <div className="filterColors">
-          <Accordion defaultExpanded disableGutters elevation={0}>
-            <AccordionSummary
-              expandIcon={<IoIosArrowDown size={20} />}
-              aria-controls="panel1-content"
-              id="panel1-header"
-              sx={{ padding: 0, marginBottom: 2 }}
-            >
-              <h5 className="filterHeading">Color</h5>
-            </AccordionSummary>
-            <AccordionDetails sx={{ padding: 0 }}>
-              {
-                <div className="filterColorBtn">
-                  {filterColors.map((color, index) => (
-                    <button
-                      key={index}
-                      className={`colorButton ${
-                        selectedColors.includes(color) ? "selected" : ""
-                      }`}
-                      style={{
-                        backgroundColor: color,
-                      }}
-                      onClick={() => handleColorChange(color)}
-                    />
-                  ))}
-                </div>
-              }
-            </AccordionDetails>
-          </Accordion>
-        </div>
-        <div className="filterSizes">
-          <Accordion defaultExpanded disableGutters elevation={0}>
-            <AccordionSummary
-              expandIcon={<IoIosArrowDown size={20} />}
-              aria-controls="panel1-content"
-              id="panel1-header"
-              sx={{ padding: 0, marginBottom: 2 }}
-            >
-              <h5 className="filterHeading">Sizes</h5>
-            </AccordionSummary>
-            <AccordionDetails sx={{ padding: 0 }}>
-              <div className="sizeButtons">
-                {filterSizes.map((size, index) => (
-                  <button
-                    key={index}
-                    className={`sizeButton ${
-                      selectedSizes.includes(size) ? "selected" : ""
-                    }`}
-                    onClick={() => handleSizeChange(size)}
-                  >
-                    {size}
-                  </button>
-                ))}
-              </div>
-            </AccordionDetails>
-          </Accordion>
-        </div>
-        <div className="filterBrands">
-          <Accordion defaultExpanded disableGutters elevation={0}>
-            <AccordionSummary
-              expandIcon={<IoIosArrowDown size={20} />}
-              aria-controls="panel1-content"
-              id="panel1-header"
-              sx={{ padding: 0, marginBottom: 2 }}
-            >
-              <h5 className="filterHeading">Brands</h5>
-            </AccordionSummary>
-            <AccordionDetails sx={{ padding: 0 }}>
-              {/* Search bar */}
-              <div className="searchBar">
-                <BiSearch className="searchIcon" size={20} color={"#767676"} />
+    <div className="filterSection">
+      {/* Brands */}
+      <Accordion defaultExpanded disableGutters elevation={0}>
+        <AccordionSummary expandIcon={<IoIosArrowDown size={20} />}>
+          <h5 className="filterHeading">Brands</h5>
+        </AccordionSummary>
+        <AccordionDetails>
+          <div className="searchBar">
+            <BiSearch className="searchIcon" size={20} color="#767676" />
+            <input
+              type="text"
+              placeholder="Search"
+              value={searchTerm}
+              onChange={handleSearchChange}
+            />
+          </div>
+          <div className="brandList">
+            {filteredBrands.map((brand, index) => (
+              <div className="brandItem" key={index}>
                 <input
-                  type="text"
-                  placeholder="Search"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
+                  type="checkbox"
+                  checked={selectedBrands.includes(brand.name)}
+                  onChange={() => handleBrandChange(brand.name)}
                 />
+                <label>{brand.name}</label>
+                <span>{brand.count}</span>
               </div>
+            ))}
+          </div>
+        </AccordionDetails>
+      </Accordion>
 
-              {/* Brand list */}
-              <div className="brandList">
-                {filteredBrands.length > 0 ? (
-                  filteredBrands.map((brand, index) => (
-                    <div className="brandItem" key={index}>
-                      {/* Radio button */}
-                      <input
-                        type="checkbox"
-                        name="brand"
-                        id={`brand-${index}`}
-                        className="brandRadio"
-                      />
-                      {/* Brand name */}
-                      <label htmlFor={`brand-${index}`} className="brandLabel">
-                        {brand.name}
-                      </label>
-                      {/* Brand count */}
-                      <span className="brandCount">{brand.count}</span>
-                    </div>
-                  ))
-                ) : (
-                  <div className="notFoundMessage">Not found</div>
-                )}
-              </div>
-            </AccordionDetails>
-          </Accordion>
-        </div>
-        <div className="filterPrice">
-          <Accordion defaultExpanded disableGutters elevation={0}>
-            <AccordionSummary
-              expandIcon={<IoIosArrowDown size={20} />}
-              aria-controls="panel1-content"
-              id="panel1-header"
-              sx={{ padding: 0, marginBottom: 2 }}
-            >
-              <h5 className="filterHeading">Price</h5>
-            </AccordionSummary>
-            <AccordionDetails sx={{ padding: 0 }}>
-              <Slider
-                getAriaLabel={() => "Temperature range"}
-                value={value}
-                onChange={handleChange}
-                valueLabelDisplay="auto"
-                valueLabelFormat={(value) => `$${value}`}
-                sx={{
-                  color: "black",
-                  "& .MuiSlider-thumb": {
-                    backgroundColor: "white",
-                    border: "2px solid black",
-                    width: 18,
-                    height: 18,
-                  },
-                }}
+      {/* Colors */}
+      {/* <Accordion defaultExpanded disableGutters elevation={0}>
+        <AccordionSummary expandIcon={<IoIosArrowDown size={20} />}>
+          <h5 className="filterHeading">Colors</h5>
+        </AccordionSummary>
+        <AccordionDetails>
+          <div className="filterColorBtn">
+            {filterColors.map((color, index) => (
+              <button
+                key={index}
+                className={`colorButton ${
+                  selectedColors.includes(color) ? "selected" : ""
+                }`}
+                style={{ backgroundColor: color }}
+                onClick={() => handleColorChange(color)}
               />
+            ))}
+          </div>
+        </AccordionDetails>
+      </Accordion> */}
 
-              <div className="filterSliderPrice">
-                <div className="priceRange">
-                  <p>
-                    Min Price: <span>${value[0]}</span>
-                  </p>
-                  <p>
-                    Max Price: <span>${value[1]}</span>
-                  </p>
-                </div>
-              </div>
-            </AccordionDetails>
-          </Accordion>
-        </div>
-      </div>
+      {/* Sizes
+      <Accordion defaultExpanded disableGutters elevation={0}>
+        <AccordionSummary expandIcon={<IoIosArrowDown size={20} />}>
+          <h5 className="filterHeading">Sizes</h5>
+        </AccordionSummary>
+        <AccordionDetails>
+          <div className="sizeButtons">
+            {filterSizes.map((size) => (
+              <button
+                key={size}
+                className={`sizeButton ${
+                  selectedSizes.includes(size) ? "selected" : ""
+                }`}
+                onClick={() => handleSizeChange(size)}
+              >
+                {size}
+              </button>
+            ))}
+          </div>
+        </AccordionDetails>
+      </Accordion> */}
+
+      {/* Price */}
+      <Accordion defaultExpanded disableGutters elevation={0}>
+        <AccordionSummary expandIcon={<IoIosArrowDown size={20} />}>
+          <h5 className="filterHeading">Price</h5>
+        </AccordionSummary>
+        <AccordionDetails>
+          <Slider
+            value={priceRange}
+            onChange={handlePriceChange}
+            onChangeCommitted={handlePriceCommitted}
+            valueLabelDisplay="auto"
+            min={0}
+            max={20000000}
+            step={100000}
+            valueLabelFormat={(v) => `$${v.toLocaleString()}`}
+          />
+          <div className="filterSliderPrice">
+            <p>Min: ${priceRange[0].toLocaleString()}</p>
+            <p>Max: ${priceRange[1].toLocaleString()}</p>
+          </div>
+        </AccordionDetails>
+      </Accordion>
     </div>
   );
 };

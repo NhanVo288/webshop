@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./ShopDetails.css";
 
 import { useDispatch, useSelector } from "react-redux";
@@ -13,10 +13,11 @@ import { IoFilterSharp, IoClose } from "react-icons/io5";
 import { FaAngleRight, FaAngleLeft } from "react-icons/fa6";
 import { FaCartPlus } from "react-icons/fa";
 import toast from "react-hot-toast";
+import { fetchProducts } from "../../../Features/Product/productSlice";
 
 const ShopDetails = () => {
   const dispatch = useDispatch();
-
+  const { list, loading} = useSelector(state => state.product)
   const [wishList, setWishList] = useState({});
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
@@ -26,7 +27,12 @@ const ShopDetails = () => {
       [productID]: !prevWishlist[productID],
     }));
   };
-
+  useEffect(()=>{
+    dispatch(fetchProducts());
+  },[dispatch])
+  const handleFilter = (params) => {
+    dispatch(fetchProducts(params));
+  };
   const scrollToTop = () => {
     window.scrollTo({
       top: 0,
@@ -82,7 +88,7 @@ const ShopDetails = () => {
       <div className="shopDetails">
         <div className="shopDetailMain">
           <div className="shopDetails__left">
-            <Filter />
+            <Filter onFilter={handleFilter} />
           </div>
           <div className="shopDetails__right">
             <div className="shopDetailsSorting">
