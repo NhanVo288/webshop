@@ -5,12 +5,10 @@ import toast from "react-hot-toast";
 export const CheckAuth = createAsyncThunk(
     'auth/check',
     async () => {
-        try {
+       
             const res = await axiosInstance.get('/auth/check')
             return res.data
-        } catch (error) {
-            console.log(error)
-        }
+        
     }
 )
 

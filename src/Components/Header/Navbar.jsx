@@ -1,7 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react"; // Thêm useEffect
 import "./Navbar.css";
-
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux"; // Thêm useDispatch
 
 import logo from "../../Assets/logo.png";
 import { Link } from "react-router-dom";
@@ -16,14 +15,57 @@ import { FaXTwitter } from "react-icons/fa6";
 import { FaInstagram } from "react-icons/fa";
 import { FaYoutube } from "react-icons/fa";
 import { FaPinterest } from "react-icons/fa";
-
+import { searchProducts } from "../../Features/Product/productSlice";
 import Badge from "@mui/material/Badge";
 import UserMenu from "./UserMenu";
+import { useNavigate } from "react-router-dom";
+import StoreData from "../../Data/StoreData";
+import { logout } from "../../Features/Auth/auth.thunk";
 
 const Navbar = () => {
+  const dispatch = useDispatch();
   const cart = useSelector((state) => state.cart);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { user } = useSelector((state) => state.auth);
+
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const navigate = useNavigate();
+  const { list, searchLoading } = useSelector((state) => state.product);
+
+  const [searchTerm, setSearchTerm] = useState("");
+  const [showResults, setShowResults] = useState(false);
+  const searchRef = useRef(null); // Để xử lý click ra ngoài thì đóng dropdown
+
+  // Debounce Search
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      if (searchTerm.trim().length > 0) {
+        dispatch(searchProducts({ query: searchTerm }));
+        setShowResults(true);
+      } else {
+        setShowResults(false);
+      }
+    }, 500);
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [searchTerm, dispatch]);
+
+  // Xử lý đóng dropdown khi click ra ngoài
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (searchRef.current && !searchRef.current.contains(event.target)) {
+        setShowResults(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handleResultClick = (id) => {
+    setShowResults(false);
+    setSearchTerm("");
+    navigate(`/product/${id}`);
+  };
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
@@ -31,10 +73,7 @@ const Navbar = () => {
   };
 
   const scrollToTop = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   return (
@@ -76,16 +115,54 @@ const Navbar = () => {
               </li>
               {user && (
                 <li>
-                <Link to="https://admin-36.up.railway.app" onClick={scrollToTop}>
-                  CRM
-                </Link>
-              </li>
+                  <Link
+                    to="https://admin-36.up.railway.app"
+                    onClick={scrollToTop}
+                  >
+                    CRM
+                  </Link>
+                </li>
               )}
             </ul>
           </div>
         </div>
         <div className="iconContainer">
-          <FiSearch size={22} onClick={scrollToTop} />
+          <div className="searchWrapper" ref={searchRef}>
+            <div className="searchInputContainer">
+              <input
+                type="text"
+                placeholder="Search products..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                onFocus={() => searchTerm && setShowResults(true)}
+              />
+              <FiSearch size={22} />
+            </div>
+
+            {showResults && (
+              <div className="searchDropdown">
+                {searchLoading ? (
+                  <div className="searchStatus">Searching...</div>
+                ) : StoreData.length > 0 ? (
+                  StoreData.map((product) => (
+                    <div
+                      key={product.productID}
+                      className="searchResultItem"
+                      onClick={() => handleResultClick(product.productID)}
+                    >
+                      <img src={product.frontImg} alt={product.productName} />
+                      <div className="searchResultInfo">
+                        <p className="resName">{product.productName}</p>
+                        <p className="resPrice">${product.productPrice}</p>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="searchStatus">No products found.</div>
+                )}
+              </div>
+            )}
+          </div>
           <UserMenu />
           <Link to="/cart" onClick={scrollToTop}>
             <Badge
@@ -134,7 +211,12 @@ const Navbar = () => {
           <div className="mobile-menuTop">
             <div className="mobile-menuSearchBar">
               <div className="mobile-menuSearchBarContainer">
-                <input type="text" placeholder="Search products" />
+                <input
+                  type="text"
+                  placeholder="Search products"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
                 <Link to="/shop">
                   <FiSearch size={22} onClick={toggleMobileMenu} />
                 </Link>
@@ -167,6 +249,13 @@ const Navbar = () => {
                     CONTACT
                   </Link>
                 </li>
+                {user && (
+                  <li>
+                    <Link to="/" onClick={() => dispatch(logout())}>
+                      Logout
+                    </Link>
+                  </li>
+                )}
               </ul>
             </div>
           </div>
@@ -175,7 +264,13 @@ const Navbar = () => {
             <div className="mobile-menuFooterLogin">
               <Link to="/loginSignUp" onClick={toggleMobileMenu}>
                 <FaRegUser />
-                <p>My Account</p>
+                
+                {user ? (
+                  <>
+                    <p>My Account</p>
+                    <p>{user.email}</p>
+                  </>
+                ): <p>Login</p>}
               </Link>
             </div>
             <div className="mobile-menuFooterLangCurrency">

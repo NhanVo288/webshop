@@ -12,6 +12,7 @@ import { useSelector, useDispatch } from "react-redux";
 import Home from "./Pages/Home";
 import { CheckAuth } from "./Features/Auth/auth.thunk.js";
 import PublicRoute from "./Components/Routes/ProtectRoute.js";
+const UserProfile = lazy(() => import('./Components/UserProfile/UserProfile.jsx'))
 const About = lazy(() => import("./Pages/About"));
 const Shop = lazy(() => import("./Pages/Shop"));
 const Contact = lazy(() => import("./Pages/Contact"));
@@ -61,7 +62,14 @@ const App = () => {
             <Route path="/shop" element={<Shop />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/blog" element={<Blog />} />
-
+            <Route
+              path="/profile"
+              element={
+                <PublicRoute>
+                  <UserProfile />
+                </PublicRoute>
+              }
+            />
             <Route path="/product" element={<ProductDetails />} />
             <Route path="/blog" element={<BlogDetails />} />
             <Route
