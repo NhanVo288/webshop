@@ -12,6 +12,7 @@ import { useSelector, useDispatch } from "react-redux";
 import Home from "./Pages/Home";
 import { CheckAuth } from "./Features/Auth/auth.thunk.js";
 import PublicRoute from "./Components/Routes/ProtectRoute.js";
+import ChatBot from "./Components/Chat/ChatBot.jsx";
 const UserProfile = lazy(() => import('./Components/UserProfile/UserProfile.jsx'))
 const About = lazy(() => import("./Pages/About"));
 const Shop = lazy(() => import("./Pages/Shop"));
