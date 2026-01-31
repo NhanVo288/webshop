@@ -32,6 +32,7 @@ const ShoppingCart = lazy(() =>
 const NotFound = lazy(() => import("./Pages/NotFound"));
 
 // const Popup = lazy(() => import("./Components/PopupBanner/Popup"));
+
 const App = () => {
   const { isCheckingAuth } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
@@ -91,7 +92,7 @@ const App = () => {
 
       <Footer />
       <Toaster />
-      <ChatBot  />
+      <ChatBot />
     </BrowserRouter>
   );
 };
