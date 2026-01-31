@@ -1,14 +1,19 @@
 import { axiosInstance } from "../lib/axios";
 
-export const getProduct = (params) => {
- if (params && Object.keys(params).length > 0){
-    return axiosInstance.get('/products/search',{
-    params 
-  })
- }
- return axiosInstance.get('/products')
-}
+export const getProduct = (params = {}) => {
+  return axiosInstance.get("/products", {
+    params: {
+      page: params?.page || 0,
+      size: params?.size || 6,
+      sort: params?.sort || [],
+    },
+  });
+};
+
+export const searchProduct = (params) => {
+  return axiosInstance.get("/products/search", { params });
+};
 
 export const getProductDetail = (id) => {
-    axiosInstance.get(`/products/${id}`)
-}
+  return axiosInstance.get(`/products/${id}`);
+};

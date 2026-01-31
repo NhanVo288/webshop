@@ -10,8 +10,10 @@ import Loader from "./Components/Loader/Loader.jsx";
 import { Toaster } from "react-hot-toast";
 import { useSelector, useDispatch } from "react-redux";
 import Home from "./Pages/Home";
-import { CheckAuth } from "./Features/Auth/auth.thunk.js";
+import { fetchMe } from "./Features/User/userSlice.js";
 import PublicRoute from "./Components/Routes/ProtectRoute.js";
+import ChatBot from "./Components/Chat/ChatBot.jsx";
+const UserProfile = lazy(() => import('./Components/UserProfile/UserProfile.jsx'))
 const About = lazy(() => import("./Pages/About"));
 const Shop = lazy(() => import("./Pages/Shop"));
 const Contact = lazy(() => import("./Pages/Contact"));
@@ -36,7 +38,7 @@ const App = () => {
   const { isCheckingAuth } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(CheckAuth());
+    dispatch(fetchMe());
   }, [dispatch]);
   if (isCheckingAuth) return null;
 
@@ -61,7 +63,14 @@ const App = () => {
             <Route path="/shop" element={<Shop />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/blog" element={<Blog />} />
-
+            <Route
+              path="/profile"
+              element={
+                
+                  <UserProfile />
+                
+              }
+            />
             <Route path="/product" element={<ProductDetails />} />
             <Route path="/blog" element={<BlogDetails />} />
             <Route
@@ -84,6 +93,7 @@ const App = () => {
 
       <Footer />
       <Toaster />
+      <ChatBot />
     </BrowserRouter>
   );
 };

@@ -2,54 +2,50 @@ import { createSlice } from "@reduxjs/toolkit";
 import { CheckAuth, Login, logout, SignUp } from "./auth.thunk.js";
 
 const AuthSlice = createSlice({
-    name: 'auth',
-    initialState: {
-        user: null,
-        isCheckAuth: true,
-        isLogingIn: false,
-        isSigningUp: false
-    },
-    reducers: {},
-    extraReducers: builder => {
-        builder 
-            .addCase(CheckAuth.pending, state => {
-                state.isCheckAuth = true
-            })
-            .addCase(CheckAuth.fulfilled, (state,action) => {
-                state.user = action.payload
-                state.isCheckAuth = false
-            })
-            .addCase(CheckAuth.rejected, state => {
-                state.isCheckAuth = false
-            })
+  name: "auth",
+  initialState: {
+    user: null,
+    isCheckAuth: true,
+    isLogingIn: false,
+    isSigningUp: false,
+  },
+  reducers: {},
+  extraReducers: (builder) => {
+    builder
 
-            .addCase(Login.pending, state => {
-                state.isLogingIn = true
-            })
-            .addCase(Login.fulfilled, (state, action) => {
-                state.user = action.payload
-                state.isLogingIn = false
-            })
-            .addCase(Login.rejected, state => {
-                state.isLogingIn = false
-            })
+      .addCase(Login.pending, (state) => {
+        state.isLogingIn = true;
+      })
+      .addCase(Login.fulfilled, (state, action) => {
+        const { accessToken, refreshToken, userId } = action.payload.data;
 
-            .addCase(SignUp.pending, state => {
-                state.isSigningUp = true
-            })
-            .addCase(SignUp.fulfilled, (state, action) => {
-                state.user = action.payload
-                state.isSigningUp = false
-            })
-            .addCase(SignUp.rejected, state => {
-                state.isSigningUp = false
-            })
+        localStorage.setItem("accessToken", accessToken);
+        localStorage.setItem("refreshToken", refreshToken);
+        localStorage.setItem("userId", userId);
+        state.isLogingIn = false;
+      })
+      .addCase(Login.rejected, (state) => {
+        state.isLogingIn = false;
+      })
 
-            .addCase(logout.fulfilled, state => {
-                state.user = null
-            })
-    }
+      .addCase(SignUp.pending, (state) => {
+        state.isSigningUp = true;
+      })
+      .addCase(SignUp.fulfilled, (state, action) => {
+        state.user = action.payload;
+        state.isSigningUp = false;
+      })
+      .addCase(SignUp.rejected, (state) => {
+        state.isSigningUp = false;
+      })
 
-})
+      .addCase(logout.fulfilled, (state) => {
+        state.user = null;
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("refreshToken");
+        localStorage.removeItem("userId");
+      });
+  },
+});
 
-export default AuthSlice.reducer
+export default AuthSlice.reducer;

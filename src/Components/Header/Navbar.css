@@ -267,3 +267,102 @@
   cursor: pointer;
 }
 
+.searchWrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+}
+
+.desktopSearchInput {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 5px 10px;
+  outline: none;
+  transition: all 0.3s ease;
+  width: 150px;
+}
+
+/* Hiệu ứng focus */
+.desktopSearchInput:focus {
+  border-color: #000;
+}
+.searchWrapper {
+  position: relative; /* Gốc tọa độ cho dropdown */
+  display: flex;
+  align-items: center;
+}
+
+.searchInputContainer {
+  display: flex;
+  align-items: center;
+  border: 1px solid #eee;
+  padding: 5px 10px;
+  border-radius: 20px;
+  background: #f9f9f9;
+}
+
+.searchInputContainer input {
+  border: none;
+  background: none;
+  outline: none;
+  padding: 5px;
+  width: 200px;
+}
+
+/* Dropdown Container */
+.searchDropdown {
+  position: absolute;
+  top: 110%; /* Hiển thị ngay dưới ô input */
+  right: 0;
+  width: 350px;
+  background: white;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  z-index: 999;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+/* Từng dòng kết quả */
+.searchResultItem {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  gap: 15px;
+  cursor: pointer;
+  transition: background 0.2s;
+  border-bottom: 1px solid #f5f5f5;
+}
+
+.searchResultItem:hover {
+  background: #fcfcfc;
+}
+
+.searchResultItem img {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.resName {
+  font-weight: 500;
+  font-size: 14px;
+  margin: 0;
+  color: #333;
+}
+
+.resPrice {
+  font-size: 13px;
+  color: #888;
+  margin: 0;
+}
+
+.searchStatus {
+  padding: 20px;
+  text-align: center;
+  color: #888;
+  font-size: 14px;
+}
