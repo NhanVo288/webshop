@@ -25,8 +25,7 @@ import { logout } from "../../Features/Auth/auth.thunk";
 const Navbar = () => {
   const dispatch = useDispatch();
   const cart = useSelector((state) => state.cart);
-  const { user } = useSelector((state) => state.auth);
-
+  const {user} = useSelector((state) => state.user)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const navigate = useNavigate();
@@ -113,16 +112,6 @@ const Navbar = () => {
                   CONTACT
                 </Link>
               </li>
-              {user && (
-                <li>
-                  <Link
-                    to="https://admin-36.up.railway.app"
-                    onClick={scrollToTop}
-                  >
-                    CRM
-                  </Link>
-                </li>
-              )}
             </ul>
           </div>
         </div>
