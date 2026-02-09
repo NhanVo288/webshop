@@ -17,7 +17,7 @@ const AuthSlice = createSlice({
         state.isLogingIn = true;
       })
       .addCase(Login.fulfilled, (state, action) => {
-        const { accessToken, refreshToken, userId } = action.payload.data;
+        const { accessToken, refreshToken, userId } = action.payload?.data;
 
         localStorage.setItem("accessToken", accessToken);
         localStorage.setItem("refreshToken", refreshToken);

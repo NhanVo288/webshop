@@ -2,9 +2,8 @@ import React, { useState } from "react";
 import "./ShoppingCart.css";
 import { useSelector, useDispatch } from "react-redux";
 import {
-  removeFromCart,
+  deleteItem,
   updateQuantity,
-  selectCartTotalAmount,
 } from "../../Features/Cart/cartSlice";
 
 import { MdOutlineClose } from "react-icons/md";
@@ -32,7 +31,7 @@ const ShoppingCart = () => {
     }
   };
 
-  const totalPrice = useSelector(selectCartTotalAmount);
+  const totalPrice = useSelector(state => state.cart.totalAmount);
 
   const scrollToTop = () => {
     window.scrollTo({
@@ -211,7 +210,7 @@ const ShoppingCart = () => {
                             <td data-label="">
                               <MdOutlineClose
                                 onClick={() =>
-                                  dispatch(removeFromCart(item.productID))
+                                  dispatch(deleteItem(item.productID))
                                 }
                               />
                             </td>
@@ -327,7 +326,7 @@ const ShoppingCart = () => {
                                   <MdOutlineClose
                                     size={20}
                                     onClick={() =>
-                                      dispatch(removeFromCart(item.productID))
+                                      dispatch(deleteItem(item.productID))
                                     }
                                   />
                                   <p>${item.quantity * item.productPrice}</p>

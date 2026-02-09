@@ -5,7 +5,7 @@ import { FaRegUser } from "react-icons/fa6";
 import { logout } from "../../Features/Auth/auth.thunk";
 
 const UserMenu = () => {
-  const { user } = useSelector((state) => state.auth);
+  const { user } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
@@ -41,14 +41,31 @@ const UserMenu = () => {
 
       {open && (
         <div className="userDropdown">
-          <p>{user.email}</p>
+          <div className="userInfo">
+            <p className="userName">{user?.name || "Người dùng"}</p>
+            <p className="userEmail">{user?.email}</p>
+          </div>
+
+          <div className="divider" />
+
           <button
+            className="menuItem"
+            onClick={() => {
+              navigate("/profile");
+              setOpen(false);
+            }}
+          >
+            Thông tin tài khoản
+          </button>
+
+          <button
+            className="menuItem logout"
             onClick={() => {
               dispatch(logout());
               setOpen(false);
             }}
           >
-            Logout
+            Đăng xuất
           </button>
         </div>
       )}

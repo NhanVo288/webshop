@@ -66,7 +66,7 @@ const ChatBot = ({ apiKey }) => {
         .slice(-1)[0]?.text;
 
       const res = await axios.post(
-        "http://26.66.75.45:8000/ask",
+        "http://26.100.40.164:8000/ask",
         {
           message: lastUserMessage,
           user_id: "guest_user",

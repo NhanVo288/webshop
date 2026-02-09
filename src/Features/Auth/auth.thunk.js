@@ -5,14 +5,14 @@ import toast from "react-hot-toast";
 
 export const Login = createAsyncThunk(
     'auth/login',
-    async (data) => {
+    async (data, {rejectWithValue}) => {
         try {
             const res = await axiosInstance.post('/users/auth/login',data)
             toast.success('Đăng nhập thành công')
             return res.data
         } catch (error) {
-            console.log(error)
             toast.error('Sai email hoặc password')
+            return rejectWithValue(error.response?.data)
         }
     }
 )
