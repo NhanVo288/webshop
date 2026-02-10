@@ -25,7 +25,7 @@ const ShopDetails = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   useEffect(() => {
-    dispatch(fetchProducts({ page: currentPage, size: 6 })); // Lấy trang đầu, 9 sp mỗi trang
+    dispatch(fetchProducts({ page: currentPage, size: 6 }));
   }, [dispatch,currentPage]);
 
   const handleFilter = (params) => {
@@ -58,17 +58,11 @@ const ShopDetails = () => {
   const toggleDrawer = () => setIsDrawerOpen(!isDrawerOpen);
   const closeDrawer = () => setIsDrawerOpen(false);
 
-  const handleAddToCart = (product) => {
-    const productInCart = cartItems.find((item) => item.id === product.id);
-
-    if (productInCart && productInCart.quantity >= 20) {
-      toast.error("Product limit reached");
-    } else {
-      dispatch(addToCart(product));
-      toast.success(`Đã thêm vào giỏ hàng`);
-    }
+  const handleAddToCart = ({productId, quantity}) => {
+    
+      dispatch(addToCart({productId, quantity}));
+    
   };
-
   return (
     <>
       <div className="shopDetails">
@@ -101,7 +95,7 @@ const ShopDetails = () => {
             ) : (
               <div className="shopDetailsProducts">
                 <div className="shopDetailsProductsContainer">
-                  {StoreData.map((product) => (
+                  {list.map((product) => (
                     <div className="sdProductContainer" key={product.id}>
                       <div className="sdProductImages">
                         <Link
@@ -109,7 +103,7 @@ const ShopDetails = () => {
                           onClick={scrollToTop}
                         >
                           <img
-                            src={product.thumbnail || "placeholder.jpg"}
+                            src={product.images.imageUrl || "placeholder.jpg"}
                             alt={product.name}
                             className="sdProduct_front"
                           />
@@ -120,26 +114,26 @@ const ShopDetails = () => {
                             className="sdProduct_back"
                           />
                         </Link>
-                        <h4 onClick={() => handleAddToCart(product)}>
+                        <h4 onClick={() => handleAddToCart({productId: product.id, quantity: 1})}>
                           Add to Cart
                         </h4>
                       </div>
                       <div
                         className="sdProductImagesCart"
-                        onClick={() => handleAddToCart(product)}
+                        onClick={() => handleAddToCart({productId: product.id, quantity: 1})}
                       >
                         <FaCartPlus />
                       </div>
                       <div className="sdProductInfo">
                         <div className="sdProductCategoryWishlist">
                           <p>{product.brand || "Brand"}</p>
-                          <FiHeart
+                          {/* <FiHeart
                             onClick={() => handleWishlistClick(product.id)}
                             style={{
                               color: wishList[product.id] ? "red" : "#767676",
                               cursor: "pointer",
                             }}
-                          />
+                          /> */}
                         </div>
                         <div className="sdProductNameInfo">
                           <Link
@@ -161,7 +155,7 @@ const ShopDetails = () => {
 
             <Pagination
               currentPage={currentPage + 1}
-              totalPages={5}
+              totalPages={pagination.totalPages}
               onPageChange={onChangePage}
             />
             {/* <div className="shopDetailsPagination">

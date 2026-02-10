@@ -21,6 +21,7 @@ import UserMenu from "./UserMenu";
 import { useNavigate } from "react-router-dom";
 import StoreData from "../../Data/StoreData";
 import { logout } from "../../Features/Auth/auth.thunk";
+import { getCart } from "../../Features/Cart/cartSlice";
 
 const Navbar = () => {
   const dispatch = useDispatch();
@@ -74,6 +75,9 @@ const Navbar = () => {
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
+  useEffect(() => {
+    dispatch(getCart())
+  },[dispatch])
 
   return (
     <>

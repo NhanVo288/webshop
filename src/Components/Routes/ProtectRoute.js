@@ -2,9 +2,9 @@ import { Navigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 const PublicRoute = ({ children }) => {
-  const { user, isCheckingAuth } = useSelector((state) => state.auth);
+  const { user, loading } = useSelector((state) => state.user);
 
-  if (isCheckingAuth) return null;
+  if (loading) return null;
 
   // ĐÃ LOGIN → không cho vào login nữa
   if (user) {

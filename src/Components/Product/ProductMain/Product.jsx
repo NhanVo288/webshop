@@ -23,8 +23,7 @@ import toast from "react-hot-toast";
 import "./Product.css";
 
 const Product = () => {
-  // Product images Gallery
-
+  const { detail } = useSelector(state => state.product)
   const productImg = [product1, product2, product3, product4];
   const [currentImg, setCurrentImg] = useState(0);
 
@@ -91,11 +90,8 @@ const Product = () => {
 
   const handleAddToCart = () => {
     const productDetails = {
-      productID: 14,
-      productName: "Lightweight Puffer Jacket",
-      productPrice: 90,
-      frontImg: productImg[0],
-      productReviews: "8k+ reviews",
+      productId: detail.id,
+      quantity: 1
     };
 
     const productInCart = cartItems.find(
@@ -159,7 +155,7 @@ const Product = () => {
                 <Link to="/">Home</Link>&nbsp;/&nbsp;
                 <Link to="/shop">The Shop</Link>
               </div>
-              <div className="prevNextLink">
+              {/* <div className="prevNextLink">
                 <Link to="/product">
                   <GoChevronLeft />
                   <p>Prev</p>
@@ -168,10 +164,10 @@ const Product = () => {
                   <p>Next</p>
                   <GoChevronRight />
                 </Link>
-              </div>
+              </div> */}
             </div>
             <div className="productName">
-              <h1>Lightweight Puffer Jacket With a Hood</h1>
+              <h1>{detail?.name}</h1>
             </div>
             <div className="productRating">
               <FaStar color="#FEC78A" size={10} />
@@ -182,14 +178,11 @@ const Product = () => {
               <p>8k+ reviews</p>
             </div>
             <div className="productPrice">
-              <h3>$90</h3>
+              <h3>${detail?.price}</h3>
             </div>
             <div className="productDescription">
               <p>
-                Phasellus sed volutpat orci. Fusce eget lore mauris vehicula
-                elementum gravida nec dui. Aenean aliquam varius ipsum, non
-                ultricies tellus sodales eu. Donec dignissim viverra nunc, ut
-                aliquet magna posuere eget.
+                {detail?.description}
               </p>
             </div>
             <div className="productSizeColor">
@@ -281,10 +274,10 @@ const Product = () => {
                 <span>SKU: </span>N/A
               </p>
               <p>
-                <span>CATEGORIES: </span>Casual & Urban Wear, Jackets, Men
+                <span>MODEL: </span>{detail?.model}
               </p>
               <p>
-                <span>TAGS: </span>biker, black, bomber, leather
+                <span>BRAND: </span>{detail?.brand}
               </p>
             </div>
           </div>

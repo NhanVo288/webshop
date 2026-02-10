@@ -2,7 +2,7 @@ import axios from "axios";
 
 export const axiosInstance = axios.create({
     baseURL: "http://26.100.40.164:8181/api",
-    withCredentials: true
+    // withCredentials: true
 })
 axiosInstance.interceptors.request.use((config) => {
   const token = localStorage.getItem("accessToken");

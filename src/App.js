@@ -35,12 +35,13 @@ const NotFound = lazy(() => import("./Pages/NotFound"));
 // const Popup = lazy(() => import("./Components/PopupBanner/Popup"));
 
 const App = () => {
-  const { isCheckingAuth } = useSelector((state) => state.auth);
+  const {  loading } = useSelector((state) => state.user);
+  const {  user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(fetchMe());
-  }, [dispatch]);
-  if (isCheckingAuth) return null;
+  }, [dispatch,user]);
+  if (loading) return null;
 
   return (
     <BrowserRouter>
@@ -71,7 +72,7 @@ const App = () => {
                 
               }
             />
-            <Route path="/product" element={<ProductDetails />} />
+            <Route path="/product/:id" element={<ProductDetails />} />
             <Route path="/blog" element={<BlogDetails />} />
             <Route
               path="/loginSignup"

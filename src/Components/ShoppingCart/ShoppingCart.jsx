@@ -25,9 +25,9 @@ const ShoppingCart = () => {
     }
   };
 
-  const handleQuantityChange = (productId, quantity) => {
+  const handleQuantityChange = (id, quantity) => {
     if (quantity >= 1 && quantity <= 20) {
-      dispatch(updateQuantity({ productID: productId, quantity: quantity }));
+      dispatch(updateQuantity({ id: id, quantity: quantity }));
     }
   };
 
@@ -139,17 +139,17 @@ const ShoppingCart = () => {
                     <tbody>
                       {cartItems.length > 0 ? (
                         cartItems.map((item) => (
-                          <tr key={item.productID}>
+                          <tr key={item.id}>
                             <td data-label="Product">
                               <div className="shoppingBagTableImg">
-                                <Link to="/product" onClick={scrollToTop}>
+                                <Link to={`/product/${item.productId}`} onClick={scrollToTop}>
                                   <img src={item.frontImg} alt="" />
                                 </Link>
                               </div>
                             </td>
                             <td data-label="">
                               <div className="shoppingBagTableProductDetail">
-                                <Link to="/product" onClick={scrollToTop}>
+                                <Link to={`/product/${item.productId}`} onClick={scrollToTop}>
                                   <h4>{item.productName}</h4>
                                 </Link>
                                 <p>{item.productReviews}</p>
@@ -166,7 +166,7 @@ const ShoppingCart = () => {
                                 <button
                                   onClick={() =>
                                     handleQuantityChange(
-                                      item.productID,
+                                      item.id,
                                       item.quantity - 1
                                     )
                                   }
@@ -180,7 +180,7 @@ const ShoppingCart = () => {
                                   value={item.quantity}
                                   onChange={(e) =>
                                     handleQuantityChange(
-                                      item.productID,
+                                      item.id,
                                       parseInt(e.target.value)
                                     )
                                   }
@@ -188,7 +188,7 @@ const ShoppingCart = () => {
                                 <button
                                   onClick={() =>
                                     handleQuantityChange(
-                                      item.productID,
+                                      item.id,
                                       item.quantity + 1
                                     )
                                   }
@@ -210,7 +210,7 @@ const ShoppingCart = () => {
                             <td data-label="">
                               <MdOutlineClose
                                 onClick={() =>
-                                  dispatch(deleteItem(item.productID))
+                                  dispatch(deleteItem(item.id))
                                 }
                               />
                             </td>
@@ -273,16 +273,16 @@ const ShoppingCart = () => {
                     {cartItems.length > 0 ? (
                       <>
                         {cartItems.map((item) => (
-                          <div key={item.productID}>
+                          <div key={item.id}>
                             <div className="shoppingBagTableMobileItems">
                               <div className="shoppingBagTableMobileItemsImg">
-                                <Link to="/product" onClick={scrollToTop}>
+                                <Link to={`/product/${item.productId}`} onClick={scrollToTop}>
                                   <img src={item.frontImg} alt="" />
                                 </Link>
                               </div>
                               <div className="shoppingBagTableMobileItemsDetail">
                                 <div className="shoppingBagTableMobileItemsDetailMain">
-                                  <Link to="/product" onClick={scrollToTop}>
+                                  <Link to={`/product/${item.productId}`} onClick={scrollToTop}>
                                     <h4>{item.productName}</h4>
                                   </Link>
                                   <p>{item.productReviews}</p>
@@ -290,7 +290,7 @@ const ShoppingCart = () => {
                                     <button
                                       onClick={() =>
                                         handleQuantityChange(
-                                          item.productID,
+                                          item.id,
                                           item.quantity - 1
                                         )
                                       }
@@ -304,7 +304,7 @@ const ShoppingCart = () => {
                                       value={item.quantity}
                                       onChange={(e) =>
                                         handleQuantityChange(
-                                          item.productID,
+                                          item.id,
                                           parseInt(e.target.value)
                                         )
                                       }
@@ -312,7 +312,7 @@ const ShoppingCart = () => {
                                     <button
                                       onClick={() =>
                                         handleQuantityChange(
-                                          item.productID,
+                                          item.id,
                                           item.quantity + 1
                                         )
                                       }
@@ -326,7 +326,7 @@ const ShoppingCart = () => {
                                   <MdOutlineClose
                                     size={20}
                                     onClick={() =>
-                                      dispatch(deleteItem(item.productID))
+                                      dispatch(deleteItem(item.id))
                                     }
                                   />
                                   <p>${item.quantity * item.productPrice}</p>
@@ -403,7 +403,7 @@ const ShoppingCart = () => {
                       <tr>
                         <th>Total</th>
                         <td>
-                          ${(totalPrice === 0 ? 0 : totalPrice + 16).toFixed(2)}
+                          ${totalPrice}
                         </td>
                       </tr>
                     </tbody>

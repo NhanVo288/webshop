@@ -18,7 +18,7 @@ const AuthSlice = createSlice({
       })
       .addCase(Login.fulfilled, (state, action) => {
         const { accessToken, refreshToken, userId } = action.payload?.data;
-
+        state.user = action.payload?.data
         localStorage.setItem("accessToken", accessToken);
         localStorage.setItem("refreshToken", refreshToken);
         localStorage.setItem("userId", userId);
@@ -32,7 +32,6 @@ const AuthSlice = createSlice({
         state.isSigningUp = true;
       })
       .addCase(SignUp.fulfilled, (state, action) => {
-        state.user = action.payload;
         state.isSigningUp = false;
       })
       .addCase(SignUp.rejected, (state) => {

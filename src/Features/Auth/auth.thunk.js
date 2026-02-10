@@ -8,7 +8,6 @@ export const Login = createAsyncThunk(
     async (data, {rejectWithValue}) => {
         try {
             const res = await axiosInstance.post('/users/auth/login',data)
-            toast.success('Đăng nhập thành công')
             return res.data
         } catch (error) {
             toast.error('Sai email hoặc password')

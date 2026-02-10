@@ -88,7 +88,7 @@ export const addToCart = createAsyncThunk(
   async (body, { rejectWithValue }) => {
     try {
       const res = await axiosInstance.post("/carts/items", body);
-      toast.success("Thêm sản phẩm thành công");
+      toast.success("Đã thêm sản phẩm vào giỏ hàng");
       return res.data; 
     } catch (error) {
       toast.error("Thêm sản phẩm thất bại");
