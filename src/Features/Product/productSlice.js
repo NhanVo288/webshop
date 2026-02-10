@@ -5,7 +5,7 @@ import {
   searchProduct,
 } from "../../api/apiProduct";
 
-//  Fetch danh sách sản phẩm (có phân trang)
+
 export const fetchProducts = createAsyncThunk(
   "products/fetch",
   async (params) => {
@@ -48,7 +48,7 @@ const productSlice = createSlice({
     detail: null,
     loading: false,
     searchLoading: false,
-    error: null, // Thêm lỗi để dễ debug
+    error: null, 
   },
   reducers: {
     clearDetail: (state) => {
@@ -89,7 +89,7 @@ const productSlice = createSlice({
         state.error = action.payload;
       })
 
-      // Xử lý fetch chi tiết
+      
       .addCase(fetchProductDetail.pending, (state) => {
         state.loading = true;
       })
