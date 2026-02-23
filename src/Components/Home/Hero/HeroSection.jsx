@@ -75,28 +75,28 @@ const HeroSection = () => {
           </Canvas>
 
           <div className="heroColorBtn">
-            {/* Black Titanium */}
+            
             <button
               onClick={() => changeColor("#1C1C1E")}
               style={{ backgroundColor: "#1C1C1E" }}
               title="Black Titanium"
             />
 
-            {/* Natural Titanium */}
+            
             <button
               onClick={() => changeColor("#8E8E8E")}
               style={{ backgroundColor: "#8E8E8E" }}
               title="Natural Titanium"
             />
 
-            {/* Silver / White Titanium */}
+            
             <button
               onClick={() => changeColor("#E5E5E5")}
               style={{ backgroundColor: "#E5E5E5" }}
               title="Silver Titanium"
             />
 
-            {/* New Pro Color – Blue Titanium */}
+            
             <button
               onClick={() => changeColor("#2F3A4A")}
               style={{ backgroundColor: "#2F3A4A" }}

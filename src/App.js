@@ -13,34 +13,40 @@ import Home from "./Pages/Home";
 import { fetchMe } from "./Features/User/userSlice.js";
 import PublicRoute from "./Components/Routes/ProtectRoute.js";
 import ChatBot from "./Components/Chat/ChatBot.jsx";
-const UserProfile = lazy(() => import('./Components/UserProfile/UserProfile.jsx'))
+import OrderHistory from "./Components/Order/OrderHistory.jsx";
+const UserProfile = lazy(
+  () => import("./Components/UserProfile/UserProfile.jsx"),
+);
 const About = lazy(() => import("./Pages/About"));
 const Shop = lazy(() => import("./Pages/Shop"));
 const Contact = lazy(() => import("./Pages/Contact"));
 const Blog = lazy(() => import("./Pages/Blog"));
 const ProductDetails = lazy(() => import("./Pages/ProductDetails"));
 const Authentication = lazy(() => import("./Pages/Authentication"));
-const ResetPass = lazy(() =>
-  import("./Components/Authentication/Reset/ResetPass")
+const ResetPass = lazy(
+  () => import("./Components/Authentication/Reset/ResetPass"),
 );
-const BlogDetails = lazy(() =>
-  import("./Components/Blog/BlogDetails/BlogDetails")
+const BlogDetails = lazy(
+  () => import("./Components/Blog/BlogDetails/BlogDetails"),
 );
 const TermsConditions = lazy(() => import("./Pages/TermsConditions"));
-const ShoppingCart = lazy(() =>
-  import("./Components/ShoppingCart/ShoppingCart")
+const ShoppingCart = lazy(
+  () => import("./Components/ShoppingCart/ShoppingCart"),
 );
 const NotFound = lazy(() => import("./Pages/NotFound"));
 
 // const Popup = lazy(() => import("./Components/PopupBanner/Popup"));
 
 const App = () => {
-  const {  loading } = useSelector((state) => state.user);
-  const {  user } = useSelector((state) => state.auth);
+  const { loading } = useSelector((state) => state.user);
+  const { user } = useSelector((state) => state.auth);
+  const token = localStorage.getItem("accessToken");
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(fetchMe());
-  }, [dispatch,user]);
+    if (token) {
+      dispatch(fetchMe());
+    }
+  }, [dispatch, token]);
   if (loading) return null;
 
   return (
@@ -64,14 +70,8 @@ const App = () => {
             <Route path="/shop" element={<Shop />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/blog" element={<Blog />} />
-            <Route
-              path="/profile"
-              element={
-                
-                  <UserProfile />
-                
-              }
-            />
+            <Route path="/order" element={<OrderHistory />} />
+            <Route path="/profile" element={<UserProfile />} />
             <Route path="/product/:id" element={<ProductDetails />} />
             <Route path="/blog" element={<BlogDetails />} />
             <Route

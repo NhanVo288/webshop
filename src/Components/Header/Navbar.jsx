@@ -26,7 +26,7 @@ import { getCart } from "../../Features/Cart/cartSlice";
 const Navbar = () => {
   const dispatch = useDispatch();
   const cart = useSelector((state) => state.cart);
-  const {user} = useSelector((state) => state.user)
+  const { user } = useSelector((state) => state.user);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const navigate = useNavigate();
@@ -76,8 +76,10 @@ const Navbar = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
   useEffect(() => {
-    dispatch(getCart())
-  },[dispatch])
+    if (user) {
+      dispatch(getCart());
+    }
+  }, [dispatch, user]);
 
   return (
     <>
@@ -257,13 +259,15 @@ const Navbar = () => {
             <div className="mobile-menuFooterLogin">
               <Link to="/loginSignUp" onClick={toggleMobileMenu}>
                 <FaRegUser />
-                
+
                 {user ? (
                   <>
                     <p>My Account</p>
                     <p>{user.email}</p>
                   </>
-                ): <p>Login</p>}
+                ) : (
+                  <p>Login</p>
+                )}
               </Link>
             </div>
             <div className="mobile-menuFooterLangCurrency">

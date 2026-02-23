@@ -3,7 +3,7 @@ import { useGLTF } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 
 export function Model({ color, ...props }) {
-  const { scene, materials } = useGLTF("/iphone_17.glb");
+  const { scene, materials } = useGLTF("/iphone17-1.glb");
   const modelRef = useRef();
 
   useFrame((state) => {
@@ -26,10 +26,10 @@ export function Model({ color, ...props }) {
   }, [color, materials]);
 
   return (
-    <group ref={modelRef} scale={[0.9, 0.9, 0.9]} {...props}>
+    <group ref={modelRef} scale={[0.5, 0.5, 0.5]} {...props}>
       <primitive object={scene} />
     </group>
   );
 }
 
-useGLTF.preload("/iphone_17.glb");
+useGLTF.preload("/iphone17-1.glb");
