@@ -8,6 +8,7 @@ import "./index.css";
 const ChatBot = ({ apiKey }) => {
   const [chatHistory, setChatHistory] = useState([]);
   const [showChatbot, setShowChatbot] = useState(false);
+  const userId = localStorage.getItem('userId')
   const chatBodyRef = useRef();
 
   //   const generateBotResponse = async (history) => {
@@ -69,8 +70,8 @@ const ChatBot = ({ apiKey }) => {
         "http://26.100.40.164:8000/ask",
         {
           message: lastUserMessage,
-          user_id: "guest_user",
-          session_id: "web_chat_001",
+          user_id: userId,
+          session_id: userId,
         },
         { headers: { "Content-Type": "application/json" } },
       );
@@ -88,7 +89,7 @@ const ChatBot = ({ apiKey }) => {
         products.forEach((item, index) => {
           botText += `
 **${index + 1}. ${item.name}**  
-- 💰 **Giá:** ${item.price.toLocaleString()} VNĐ  
+- 💰 **Giá:** ${item.price.toLocaleString()} USD 
 - ⭐ **Rating:** ${item.rating ?? "N/A"}  
 `;
         });

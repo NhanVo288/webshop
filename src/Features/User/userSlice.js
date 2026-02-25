@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { axiosInstance } from "../../lib/axios";
 import { toast } from 'react-hot-toast'
+import { logout } from "../Auth/auth.thunk";
 
 /* ================= THUNKS ================= */
 
@@ -94,9 +95,14 @@ const userSlice = createSlice({
       state.addresses = state.addresses.filter(
         (addr) => addr.id !== action.payload
       );
-    });
+    })
+    .addCase(logout.fulfilled, (state) => {
+        state.user = null;
+        state.addresses = [];
+        state.error = null;
+        state.loading = false;
+      });
   },
 });
 
-export const { logout } = userSlice.actions;
 export default userSlice.reducer;

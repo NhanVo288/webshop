@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./Trendy.css";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart } from "../../../Features/Cart/cartSlice";
@@ -7,15 +7,18 @@ import StoreData from "../../../Data/StoreData";
 import { FiHeart } from "react-icons/fi";
 import { FaStar, FaCartPlus } from "react-icons/fa";
 import toast from "react-hot-toast";
+import { fetchPopular } from "../../../Features/Recommendation/recommendSlice";
 
 const Trendy = () => {
   const dispatch = useDispatch();
   const [activeTab, setActiveTab] = useState("tab1");
   const [wishList, setWishList] = useState({});
+  const { popularProducts } = useSelector(state => state.recommend)
 
   const handleTabClick = (tab) => {
     setActiveTab(tab);
   };
+
 
   const scrollToTop = () => {
     window.scrollTo({
@@ -77,6 +80,9 @@ const Trendy = () => {
       });
     }
   };
+  useEffect(() => {
+    dispatch(fetchPopular(6))
+  },[dispatch])
 
   return (
     <>

@@ -69,8 +69,6 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { axiosInstance } from "../../lib/axios";
 import toast from "react-hot-toast";
 
-
-
 export const getCart = createAsyncThunk(
   "cart/get",
   async (_, { rejectWithValue }) => {
@@ -80,7 +78,7 @@ export const getCart = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data);
     }
-  }
+  },
 );
 
 export const addToCart = createAsyncThunk(
@@ -89,12 +87,12 @@ export const addToCart = createAsyncThunk(
     try {
       const res = await axiosInstance.post("/carts/items", body);
       toast.success("Đã thêm sản phẩm vào giỏ hàng");
-      return res.data; 
+      return res.data;
     } catch (error) {
       toast.error("Thêm sản phẩm thất bại");
       return rejectWithValue(error.response?.data);
     }
-  }
+  },
 );
 
 export const updateQuantity = createAsyncThunk(
@@ -102,11 +100,11 @@ export const updateQuantity = createAsyncThunk(
   async ({ id, quantity }, { rejectWithValue }) => {
     try {
       const res = await axiosInstance.put(`/carts/items/${id}`, { quantity });
-      return res.data; 
+      return res.data;
     } catch (error) {
       return rejectWithValue(error.response?.data);
     }
-  }
+  },
 );
 
 export const deleteItem = createAsyncThunk(
@@ -118,7 +116,7 @@ export const deleteItem = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data);
     }
-  }
+  },
 );
 
 export const deleteAllItems = createAsyncThunk(
@@ -130,10 +128,8 @@ export const deleteAllItems = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data);
     }
-  }
+  },
 );
-
-
 
 const cartSlice = createSlice({
   name: "cart",
@@ -143,7 +139,13 @@ const cartSlice = createSlice({
     totalItems: 0,
     totalAmount: 0,
   },
-  reducers: {},
+  reducers: {
+    clearCart: (state) => {
+      state.items = [];
+      state.totalAmount = 0;
+      state.totalItems = 0;
+    },
+  },
   extraReducers: (builder) => {
     builder
       /* ===== GET CART ===== */
@@ -176,16 +178,14 @@ const cartSlice = createSlice({
 
       /* ===== DELETE ONE ITEM ===== */
       .addCase(deleteItem.fulfilled, (state, action) => {
-        state.items = state.items.filter(
-          (item) => item.id !== action.payload
-        );
+        state.items = state.items.filter((item) => item.id !== action.payload);
         state.totalItems = state.items.reduce(
           (sum, item) => sum + item.quantity,
-          0
+          0,
         );
         state.totalAmount = state.items.reduce(
           (sum, item) => sum + item.subtotal,
-          0
+          0,
         );
       })
 
@@ -197,6 +197,5 @@ const cartSlice = createSlice({
       });
   },
 });
-
+export const { clearCart } = cartSlice.actions;
 export default cartSlice.reducer;
-

@@ -11,7 +11,8 @@ import { Toaster } from "react-hot-toast";
 import { useSelector, useDispatch } from "react-redux";
 import Home from "./Pages/Home";
 import { fetchMe } from "./Features/User/userSlice.js";
-import PublicRoute from "./Components/Routes/ProtectRoute.js";
+import ProtectRoute from "./Components/Routes/ProtectRoute.js";
+import PublicRoute from "./Components/Routes/PublicRoute.js";
 import ChatBot from "./Components/Chat/ChatBot.jsx";
 import OrderHistory from "./Components/Order/OrderHistory.jsx";
 const UserProfile = lazy(
@@ -71,15 +72,22 @@ const App = () => {
             <Route path="/contact" element={<Contact />} />
             <Route path="/blog" element={<Blog />} />
             <Route path="/order" element={<OrderHistory />} />
-            <Route path="/profile" element={<UserProfile />} />
+            <Route
+              path="/profile"
+              element={
+                <PublicRoute>
+                  <UserProfile />
+                </PublicRoute>
+              }
+            />
             <Route path="/product/:id" element={<ProductDetails />} />
             <Route path="/blog" element={<BlogDetails />} />
             <Route
               path="/loginSignup"
               element={
-                <PublicRoute>
+                <ProtectRoute>
                   <Authentication />
-                </PublicRoute>
+                </ProtectRoute>
               }
             />
             <Route path="/reset-password" element={<ResetPass />} />

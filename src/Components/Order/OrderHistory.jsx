@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getMyOrders } from "../../Features/Order/orderSlice";
+import { cancelOrder } from "../../Features/Order/orderSlice";
 import "./OrderHistory.css";
 
 const OrderHistory = () => {
@@ -22,7 +23,14 @@ const OrderHistory = () => {
       </div>
     );
   }
-
+  const handleCancelOrder = async (orderId) => {
+  try {
+    await dispatch(cancelOrder(orderId)).unwrap();
+    dispatch(getMyOrders()); 
+  } catch (error) {
+    console.error("Huỷ đơn thất bại:", error);
+  }
+};
   return (
     <div className="order-container">
       <h2 className="order-title">Lịch sử đơn hàng</h2>
@@ -50,7 +58,7 @@ const OrderHistory = () => {
 
                 <div className="product-info">
                   <p className="product-name">
-                    {item.product?.name}
+                    {item.productName}
                   </p>
                   <p className="product-quantity">
                     x{item.quantity}
@@ -58,7 +66,7 @@ const OrderHistory = () => {
                 </div>
 
                 <div className="product-price">
-                  {new Intl.NumberFormat("vi-VN").format(item.price)} đ
+                  {new Intl.NumberFormat("vi-VN").format(item.subtotal)} đ
                 </div>
               </div>
             ))}
@@ -75,7 +83,7 @@ const OrderHistory = () => {
 
             <div className="order-actions">
               {order.status === "PENDING" && (
-                <button className="btn-cancel">
+                <button className="btn-cancel" onClick={() => handleCancelOrder(order.id)}>
                   Hủy đơn
                 </button>
               )}

@@ -6,6 +6,7 @@ import {  clearDetail, fetchProductDetail } from "../Features/Product/productSli
 import AdditionalInfo from "../Components/Product/AdditonInfo/AdditionalInfo";
 import Product from "../Components/Product/ProductMain/Product";
 import RelatedProducts from "../Components/Product/RelatedProducts/RelatedProducts";
+import { fetchSimilar, trackInteraction } from "../Features/Recommendation/recommendSlice";
 
 const ProductDetails = () => {
   const { id } = useParams();      
@@ -19,7 +20,14 @@ const ProductDetails = () => {
     dispatch(clearDetail()); 
   };
   }, [dispatch, id]);
-
+  useEffect(() => {
+  dispatch(fetchSimilar({ productId: id }));
+  dispatch(trackInteraction({
+    productId: id,
+    categoryId: 1,
+    interactionType: "VIEW"
+  }));
+}, []);
   return (
     <>
       <Product />

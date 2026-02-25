@@ -10,7 +10,11 @@ import { MdOutlineClose } from "react-icons/md";
 
 import { Link } from "react-router-dom";
 
-import success from "../../Assets/success.png";
+import success from "../../Assets/success.png";                                                                                                       
+import { createOrder } from "../../Features/Order/orderSlice";                                              
+import { processPayment } from "../../Features/Payment/paymentSlice";  
+import { clearCart } from "../../Features/Cart/cartSlice";                                             
+import toast from "react-hot-toast";
 
 const ShoppingCart = () => {
   const cartItems = useSelector((state) => state.cart.items);
@@ -32,7 +36,40 @@ const ShoppingCart = () => {
   };
 
   const totalPrice = useSelector(state => state.cart.totalAmount);
+  const clearCarts = () => {
+    dispatch(clearCart())
+  }
+  const handleCheckout = async () => {
+    try {
+      
+      const order = await dispatch(
+        createOrder({
+          items: cartItems.map((i) => ({
+            productId: i.productId,
+            quantity: i.quantity,
+            productName: i.name,
+            unitPrice: i.productPrice,
+          })),
+          shippingAddress: "123 Nguyen Trai",
+          shippingCity: "HCM",
+          paymentMethod: "VNPAY",
+        })
+      ).unwrap();
 
+      
+      await dispatch(
+        processPayment({
+          orderId: order.id,
+          amount: order.totalAmount,
+          paymentMethod: "VNPAY",
+        })
+      ).unwrap();
+
+      toast.success('Đặt hàng thành công')
+    } catch (err) {
+       toast.error('Đặt hàng thất bại')
+    }
+  };
   const scrollToTop = () => {
     window.scrollTo({
       top: 0,
@@ -605,6 +642,8 @@ const ShoppingCart = () => {
                     onClick={() => {
                       handleTabClick("cartTab3");
                       window.scrollTo({ top: 0, behavior: "smooth" });
+                      handleCheckout()
+                      clearCarts()
                       setPayments(true);
                     }}
                   >

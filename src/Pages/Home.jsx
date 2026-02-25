@@ -12,12 +12,12 @@ const Home = () => {
   return (
     <>
       <HeroSection />
-      <CollectionBox />
+      {/* <CollectionBox /> */}
       <Trendy />
-      <DealTimer />
-      <Banner />
+      {/* <DealTimer /> */}
+      {/* <Banner /> */}
       <LimitedEdition />
-      <Instagram />
+      {/* <Instagram /> */}
       <Services />
     </>
   );
