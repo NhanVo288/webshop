@@ -446,7 +446,7 @@ const ShoppingCart = () => {
                         <option value="United States">United States</option>
                         <option value="Turkey">Turkey</option>
                       </select>
-                      <input type="text" placeholder="Street Address*" />
+                      <input type="text" placeholder="Street Address*"/>
                       <input type="text" placeholder="" />
                       <input type="text" placeholder="Town / City *" />
                       <input type="text" placeholder="Postcode / ZIP *" />

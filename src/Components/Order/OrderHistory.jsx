@@ -80,9 +80,6 @@ const OrderHistory = () => {
                 </button>
               )}
 
-              <button className="btn-buy-again">
-                Mua lại
-              </button>
             </div>
           </div>
 

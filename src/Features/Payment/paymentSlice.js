@@ -1,44 +1,60 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import toast from "react-hot-toast";
-import { axiosInstance } from "./../../lib/axios";
+import { axiosInstance } from "../../lib/axios";
 
-export const createPayment = createAsyncThunk(
-  "payment/process",
+// Process Payment
+export const processPayment = createAsyncThunk(
+  "payment/processPayment",
   async (body, { rejectWithValue }) => {
     try {
-      const res = await axiosInstance.post("/payments/process",body);
+      const res = await axiosInstance.post("/payments/process", body);
       return res.data;
-    } catch (error) {
-        return rejectWithValue(error.response?.data)
+    } catch (err) {
+      return rejectWithValue(err.response?.data);
     }
-  },
+  }
 );
 
-export const paymentCallBack = createAsyncThunk(
-    'payment/callback',
-    async (body,{rejectWithValue}) => {
-        try {
-            const res = await axiosInstance.post('/payments/callback',body)
-            return res.data
-        } catch (error) {
-            return rejectWithValue(error.response?.data)
-        }
+// Get Payment by OrderId
+export const getPaymentByOrderId = createAsyncThunk(
+  "payment/getByOrder",
+  async (orderId, { rejectWithValue }) => {
+    try {
+      const res = await axiosInstance.get(
+        `/payments/order/${orderId}`
+      );
+      return res.data;
+    } catch (err) {
+      return rejectWithValue(err.response?.data);
     }
-)
-
-export const getPaymentById = createAsyncThunk(
-    'payment/get',
-    async (id, {rejectWithValue}) => {
-        try {
-            const res = await axiosInstance.get(`/payments/${id}`)
-            return res.data
-        } catch (error) {
-            return rejectWithValue(error.response?.data)
-        }
-    }
-)
+  }
+);
 
 const paymentSlice = createSlice({
-    name: 'payment',
-    
-})
+  name: "payment",
+  initialState: {
+    payment: null,
+    loading: false,
+    error: null,
+  },
+  reducers: {},
+  extraReducers: (builder) => {
+    builder
+      .addCase(processPayment.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(processPayment.fulfilled, (state, action) => {
+        state.loading = false;
+        state.payment = action.payload;
+      })
+      .addCase(processPayment.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+      .addCase(getPaymentByOrderId.fulfilled, (state, action) => {
+        state.payment = action.payload;
+      });
+  },
+});
+
+export default paymentSlice.reducer;
