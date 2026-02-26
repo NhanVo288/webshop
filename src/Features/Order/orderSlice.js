@@ -42,11 +42,24 @@ export const cancelOrder = createAsyncThunk(
   }
 );
 
+export const getOrderStatus = createAsyncThunk(
+  'order/status',
+  async (id,{rejectWithValue}) => {
+    try {
+      const res = await axiosInstance.get(`/orders/${id}/status-history`)
+      return res.data
+    } catch (error) {
+      return rejectWithValue(error.response?.data)
+    }
+  }
+)
+
 
 const orderSlice = createSlice({
   name: "order",
   initialState: {
     orders: [],
+    orderStatus: [],
     currentOrder: null,
     loading: false,
     error: null,
@@ -55,6 +68,9 @@ const orderSlice = createSlice({
     clearCurrentOrder: (state) => {
       state.currentOrder = null;
     },
+    clearOrderStatus: (state) =>{
+      state.orderStatus = []
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -84,9 +100,13 @@ const orderSlice = createSlice({
         if (index !== -1) {
           state.orders[index] = action.payload;
         }
-      });
+      })
+
+      .addCase(getOrderStatus.fulfilled, (state,action) => {
+        state.orderStatus = action.payload
+      })
   },
 });
 
-export const { clearCurrentOrder } = orderSlice.actions;
+export const { clearCurrentOrder, clearOrderStatus } = orderSlice.actions;
 export default orderSlice.reducer;

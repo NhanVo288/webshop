@@ -15,6 +15,7 @@ import ProtectRoute from "./Components/Routes/ProtectRoute.js";
 import PublicRoute from "./Components/Routes/PublicRoute.js";
 import ChatBot from "./Components/Chat/ChatBot.jsx";
 import OrderHistory from "./Components/Order/OrderHistory.jsx";
+import OrderStatusHistory from "./Components/Order/OrderStatusHistory.jsx";
 const UserProfile = lazy(
   () => import("./Components/UserProfile/UserProfile.jsx"),
 );
@@ -71,7 +72,22 @@ const App = () => {
             <Route path="/shop" element={<Shop />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/blog" element={<Blog />} />
-            <Route path="/order" element={<OrderHistory />} />
+            <Route
+              path="/order"
+              element={
+                <PublicRoute>
+                  <OrderHistory />
+                </PublicRoute>
+              }
+            />
+            <Route
+              path="/order/:id"
+              element={
+                <PublicRoute>
+                  <OrderStatusHistory />
+                </PublicRoute>
+              }
+            />
             <Route
               path="/profile"
               element={

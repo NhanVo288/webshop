@@ -1,0 +1,81 @@
+.order-status-history {
+  margin-top: 20px;
+  padding: 20px;
+  background: #fff;
+  border-radius: 8px;
+}
+
+.order-status-history h3 {
+  margin-bottom: 20px;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.order-status-item {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  padding-bottom: 30px;
+}
+
+.order-status-item:last-child {
+  padding-bottom: 0;
+}
+
+/* Vertical line */
+.order-status-item::before {
+  content: "";
+  position: absolute;
+  left: 20px;
+  top: 40px;
+  width: 2px;
+  height: calc(100% - 40px);
+  background: #e0e0e0;
+}
+
+.order-status-item:last-child::before {
+  display: none;
+}
+
+/* Icon circle */
+.order-status-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #e0e0e0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 15px;
+  font-size: 18px;
+  color: #fff;
+  z-index: 1;
+}
+
+/* Completed step (màu xanh giống Shopee) */
+.order-status-item.completed .order-status-icon {
+  background: #00bfa5;
+}
+
+/* Current step (màu cam Shopee) */
+.order-status-item.active .order-status-icon {
+  background: #ee4d2d;
+}
+
+/* Text content */
+.order-status-content h4 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.order-status-content p {
+  margin: 4px 0;
+  font-size: 14px;
+  color: #555;
+}
+
+.order-status-content span {
+  font-size: 12px;
+  color: #999;
+}
