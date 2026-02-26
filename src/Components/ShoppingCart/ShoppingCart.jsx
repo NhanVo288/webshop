@@ -1,19 +1,16 @@
 import React, { useState } from "react";
 import "./ShoppingCart.css";
 import { useSelector, useDispatch } from "react-redux";
-import {
-  deleteItem,
-  updateQuantity,
-} from "../../Features/Cart/cartSlice";
+import { deleteItem, updateQuantity } from "../../Features/Cart/cartSlice";
 
 import { MdOutlineClose } from "react-icons/md";
 
 import { Link } from "react-router-dom";
 
-import success from "../../Assets/success.png";                                                                                                       
-import { createOrder } from "../../Features/Order/orderSlice";                                              
-import { processPayment } from "../../Features/Payment/paymentSlice";  
-import { clearCart } from "../../Features/Cart/cartSlice";                                             
+import success from "../../Assets/success.png";
+import { createOrder } from "../../Features/Order/orderSlice";
+import { processPayment } from "../../Features/Payment/paymentSlice";
+import { clearCart } from "../../Features/Cart/cartSlice";
 import toast from "react-hot-toast";
 
 const ShoppingCart = () => {
@@ -35,13 +32,12 @@ const ShoppingCart = () => {
     }
   };
 
-  const totalPrice = useSelector(state => state.cart.totalAmount);
+  const totalPrice = useSelector((state) => state.cart.totalAmount);
   const clearCarts = () => {
-    dispatch(clearCart())
-  }
+    dispatch(clearCart());
+  };
   const handleCheckout = async () => {
     try {
-      
       const order = await dispatch(
         createOrder({
           items: cartItems.map((i) => ({
@@ -53,21 +49,22 @@ const ShoppingCart = () => {
           shippingAddress: "123 Nguyen Trai",
           shippingCity: "HCM",
           paymentMethod: "VNPAY",
-        })
+        }),
       ).unwrap();
 
-      
       await dispatch(
         processPayment({
           orderId: order.id,
           amount: order.totalAmount,
           paymentMethod: "VNPAY",
-        })
+        }),
       ).unwrap();
-
-      toast.success('Đặt hàng thành công')
+      handleTabClick("cartTab3");
+      clearCarts();
+      setPayments(true);
+      toast.success("Đặt hàng thành công");
     } catch (err) {
-       toast.error('Đặt hàng thất bại')
+      toast.error("Đặt hàng thất bại");
     }
   };
   const scrollToTop = () => {
@@ -95,7 +92,7 @@ const ShoppingCart = () => {
   // Radio Button Data
 
   const [selectedPayment, setSelectedPayment] = useState(
-    "Direct Bank Transfer"
+    "Direct Bank Transfer",
   );
 
   const handlePaymentChange = (e) => {
@@ -179,14 +176,20 @@ const ShoppingCart = () => {
                           <tr key={item.id}>
                             <td data-label="Product">
                               <div className="shoppingBagTableImg">
-                                <Link to={`/product/${item.productId}`} onClick={scrollToTop}>
+                                <Link
+                                  to={`/product/${item.productId}`}
+                                  onClick={scrollToTop}
+                                >
                                   <img src={item.frontImg} alt="" />
                                 </Link>
                               </div>
                             </td>
                             <td data-label="">
                               <div className="shoppingBagTableProductDetail">
-                                <Link to={`/product/${item.productId}`} onClick={scrollToTop}>
+                                <Link
+                                  to={`/product/${item.productId}`}
+                                  onClick={scrollToTop}
+                                >
                                   <h4>{item.productName}</h4>
                                 </Link>
                                 <p>{item.productReviews}</p>
@@ -204,7 +207,7 @@ const ShoppingCart = () => {
                                   onClick={() =>
                                     handleQuantityChange(
                                       item.id,
-                                      item.quantity - 1
+                                      item.quantity - 1,
                                     )
                                   }
                                 >
@@ -218,7 +221,7 @@ const ShoppingCart = () => {
                                   onChange={(e) =>
                                     handleQuantityChange(
                                       item.id,
-                                      parseInt(e.target.value)
+                                      parseInt(e.target.value),
                                     )
                                   }
                                 />
@@ -226,7 +229,7 @@ const ShoppingCart = () => {
                                   onClick={() =>
                                     handleQuantityChange(
                                       item.id,
-                                      item.quantity + 1
+                                      item.quantity + 1,
                                     )
                                   }
                                 >
@@ -246,9 +249,7 @@ const ShoppingCart = () => {
                             </td>
                             <td data-label="">
                               <MdOutlineClose
-                                onClick={() =>
-                                  dispatch(deleteItem(item.id))
-                                }
+                                onClick={() => dispatch(deleteItem(item.id))}
                               />
                             </td>
                           </tr>
@@ -313,13 +314,19 @@ const ShoppingCart = () => {
                           <div key={item.id}>
                             <div className="shoppingBagTableMobileItems">
                               <div className="shoppingBagTableMobileItemsImg">
-                                <Link to={`/product/${item.productId}`} onClick={scrollToTop}>
+                                <Link
+                                  to={`/product/${item.productId}`}
+                                  onClick={scrollToTop}
+                                >
                                   <img src={item.frontImg} alt="" />
                                 </Link>
                               </div>
                               <div className="shoppingBagTableMobileItemsDetail">
                                 <div className="shoppingBagTableMobileItemsDetailMain">
-                                  <Link to={`/product/${item.productId}`} onClick={scrollToTop}>
+                                  <Link
+                                    to={`/product/${item.productId}`}
+                                    onClick={scrollToTop}
+                                  >
                                     <h4>{item.productName}</h4>
                                   </Link>
                                   <p>{item.productReviews}</p>
@@ -328,7 +335,7 @@ const ShoppingCart = () => {
                                       onClick={() =>
                                         handleQuantityChange(
                                           item.id,
-                                          item.quantity - 1
+                                          item.quantity - 1,
                                         )
                                       }
                                     >
@@ -342,7 +349,7 @@ const ShoppingCart = () => {
                                       onChange={(e) =>
                                         handleQuantityChange(
                                           item.id,
-                                          parseInt(e.target.value)
+                                          parseInt(e.target.value),
                                         )
                                       }
                                     />
@@ -350,7 +357,7 @@ const ShoppingCart = () => {
                                       onClick={() =>
                                         handleQuantityChange(
                                           item.id,
-                                          item.quantity + 1
+                                          item.quantity + 1,
                                         )
                                       }
                                     >
@@ -439,9 +446,7 @@ const ShoppingCart = () => {
                       </tr>
                       <tr>
                         <th>Total</th>
-                        <td>
-                          ${totalPrice}
-                        </td>
+                        <td>${totalPrice}</td>
                       </tr>
                     </tbody>
                   </table>
@@ -483,7 +488,7 @@ const ShoppingCart = () => {
                         <option value="United States">United States</option>
                         <option value="Turkey">Turkey</option>
                       </select>
-                      <input type="text" placeholder="Street Address*"/>
+                      <input type="text" placeholder="Street Address*" />
                       <input type="text" placeholder="" />
                       <input type="text" placeholder="Town / City *" />
                       <input type="text" placeholder="Postcode / ZIP *" />
@@ -550,7 +555,7 @@ const ShoppingCart = () => {
                             <td>
                               $
                               {(totalPrice === 0 ? 0 : totalPrice + 16).toFixed(
-                                2
+                                2,
                               )}
                             </td>
                           </tr>
@@ -640,11 +645,8 @@ const ShoppingCart = () => {
                   </div>
                   <button
                     onClick={() => {
-                      handleTabClick("cartTab3");
                       window.scrollTo({ top: 0, behavior: "smooth" });
-                      handleCheckout()
-                      clearCarts()
-                      setPayments(true);
+                      handleCheckout();
                     }}
                   >
                     Place Order
@@ -724,7 +726,7 @@ const ShoppingCart = () => {
                             <td>
                               $
                               {(totalPrice === 0 ? 0 : totalPrice + 16).toFixed(
-                                2
+                                2,
                               )}
                             </td>
                           </tr>

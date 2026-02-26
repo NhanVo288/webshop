@@ -51,11 +51,11 @@ const UserMenu = () => {
           <button
             className="menuItem"
             onClick={() => {
-              navigate("/profile");
+              navigate("/address");
               setOpen(false);
             }}
           >
-            Thông tin tài khoản
+            Địa chỉ
           </button>
 
           <button

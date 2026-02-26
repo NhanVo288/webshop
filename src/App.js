@@ -75,21 +75,21 @@ const App = () => {
             <Route
               path="/order"
               element={
-                <PublicRoute>
+                
                   <OrderHistory />
-                </PublicRoute>
+                
               }
             />
             <Route
               path="/order/:id"
               element={
-                <PublicRoute>
+                
                   <OrderStatusHistory />
-                </PublicRoute>
+                
               }
             />
             <Route
-              path="/profile"
+              path="/address"
               element={
                 <PublicRoute>
                   <UserProfile />
