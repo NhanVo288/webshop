@@ -9,6 +9,7 @@ const ChatBot = ({ apiKey }) => {
   const [chatHistory, setChatHistory] = useState([]);
   const [showChatbot, setShowChatbot] = useState(false);
   const userId = localStorage.getItem('userId')
+  const accessToken = localStorage.getItem('accessToken')
   const chatBodyRef = useRef();
 
   //   const generateBotResponse = async (history) => {
@@ -73,7 +74,10 @@ const ChatBot = ({ apiKey }) => {
           user_id: userId,
           session_id: userId,
         },
-        { headers: { "Content-Type": "application/json" } },
+        { headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          }, },
       );
 
       const data = res.data;
