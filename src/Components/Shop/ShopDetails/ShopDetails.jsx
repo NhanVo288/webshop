@@ -103,16 +103,16 @@ const ShopDetails = () => {
                           onClick={scrollToTop}
                         >
                           <img
-                            src={product.images.imageUrl || "placeholder.jpg"}
+                            src={product.images?.[0]?.imageUrl || "placeholder.jpg"}
                             alt={product.name}
                             className="sdProduct_front"
                           />
 
-                          <img
+                          {/* <img
                             src={product.thumbnail || "placeholder.jpg"}
                             alt={product.name}
                             className="sdProduct_back"
-                          />
+                          /> */}
                         </Link>
                         <h4 onClick={() => handleAddToCart({productId: product.id, quantity: 1})}>
                           Add to Cart
