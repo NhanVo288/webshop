@@ -47,15 +47,23 @@ const UserMenu = () => {
           </div>
 
           <div className="divider" />
-
           <button
             className="menuItem"
             onClick={() => {
-              navigate("/address");
+              navigate("/profile");
               setOpen(false);
             }}
           >
-            Địa chỉ
+            My orders
+          </button>
+          <button
+            className="menuItem"
+            onClick={() => {
+              navigate("/profile");
+              setOpen(false);
+            }}
+          >
+            Thông tin cá nhân
           </button>
 
           <button

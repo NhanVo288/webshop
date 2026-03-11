@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./ShopDetails.css";
 import { useDispatch, useSelector } from "react-redux";
-import { addToCart } from "../../../Features/Cart/cartSlice";
+import { addToCart, getCartInfo } from "../../../Features/Cart/cartSlice";
 import Filter from "../Filters/Filter";
 import { Link } from "react-router-dom";
 import { FiHeart } from "react-icons/fi";
@@ -59,7 +59,7 @@ const ShopDetails = () => {
   const closeDrawer = () => setIsDrawerOpen(false);
 
   const handleAddToCart = ({productId, quantity}) => {
-    
+      dispatch(getCartInfo(productId))
       dispatch(addToCart({productId, quantity}));
     
   };

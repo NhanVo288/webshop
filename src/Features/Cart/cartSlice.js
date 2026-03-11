@@ -131,10 +131,23 @@ export const deleteAllItems = createAsyncThunk(
   },
 );
 
+export const getCartInfo = createAsyncThunk(
+  "cart/cartInfo",
+  async (id, { rejectWithValue }) => {
+    try {
+      const res = await axiosInstance.get(`products/${id}/cart-info`);
+      return res.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data);
+    }
+  },
+)
+
 const cartSlice = createSlice({
   name: "cart",
   initialState: {
     isLoading: false,
+    cartInfo: null,
     items: [],
     totalItems: 0,
     totalAmount: 0,
@@ -194,7 +207,11 @@ const cartSlice = createSlice({
         state.items = [];
         state.totalItems = 0;
         state.totalAmount = 0;
-      });
+      })
+
+      .addCase(getCartInfo.fulfilled, (state,action) => {
+        state.cartInfo = action.payload
+      })
   },
 });
 export const { clearCart } = cartSlice.actions;

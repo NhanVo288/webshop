@@ -27,6 +27,17 @@ export const updateAddress = createAsyncThunk(
     }
   }
 );
+export const updateProfile = createAsyncThunk(
+  'user/updateProfile',
+  async (body,{rejectWithValue}) => {
+    try {
+      const res = await axiosInstance.put('/users/me',body)
+      return res.data.data
+    } catch (error) {
+      return rejectWithValue(error.response?.data)
+    }
+  }
+)
 export const deleteAddress = createAsyncThunk(
   "user/deleteAddress",
   async (addressId, { rejectWithValue }) => {
@@ -91,6 +102,9 @@ const userSlice = createSlice({
       }
     })
 
+    .addCase(updateProfile.fulfilled, (state,action) => {
+      state.user = action.payload
+    })
     .addCase(deleteAddress.fulfilled, (state, action) => {
       state.addresses = state.addresses.filter(
         (addr) => addr.id !== action.payload

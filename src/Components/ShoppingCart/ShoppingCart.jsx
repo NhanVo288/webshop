@@ -14,12 +14,29 @@ import { clearCart } from "../../Features/Cart/cartSlice";
 import toast from "react-hot-toast";
 
 const ShoppingCart = () => {
+  const { addresses } = useSelector((state) => state.user);
   const cartItems = useSelector((state) => state.cart.items);
   const dispatch = useDispatch();
-
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    addressLine: "",
+    ward: "",
+    district: "",
+    city: "",
+    postcode: "700000",
+    phone: "",
+    notes: "",
+  });
   const [activeTab, setActiveTab] = useState("cartTab1");
   const [payments, setPayments] = useState(false);
+  const [selectedPayment, setSelectedPayment] = useState(
+    "Direct Bank Transfer",
+  );
 
+  const handlePaymentChange = (e) => {
+    setSelectedPayment(e.target.value);
+  };
   const handleTabClick = (tab) => {
     if (tab === "cartTab1" || cartItems.length > 0) {
       setActiveTab(tab);
@@ -36,6 +53,21 @@ const ShoppingCart = () => {
   const clearCarts = () => {
     dispatch(clearCart());
   };
+  const handleSelectSavedAddress = (e) => {
+    const addr = addresses.find((a) => a.id === parseInt(e.target.value));
+    if (addr) {
+      setFormData({
+        ...formData,
+        firstName: addr.fullName.split(" ").slice(0, -1).join(" "),
+        lastName: addr.fullName.split(" ").slice(-1).join(" "),
+        addressLine: addr.addressLine,
+        ward: addr.ward,
+        district: addr.district,
+        city: addr.city,
+        phone: addr.phone,
+      });
+    }
+  };
   const handleCheckout = async () => {
     try {
       const order = await dispatch(
@@ -46,9 +78,11 @@ const ShoppingCart = () => {
             productName: i.name,
             unitPrice: i.productPrice,
           })),
-          shippingAddress: "123 Nguyen Trai",
-          shippingCity: "HCM",
-          paymentMethod: "VNPAY",
+          shippingAddress: `${formData.addressLine}, ${formData.ward}, ${formData.district}`,
+          shippingCity: formData.city,
+          shippingPostalCode: formData.postcode ?? "700000",
+          paymentMethod: selectedPayment,
+          notes: formData.notes,
         }),
       ).unwrap();
 
@@ -90,14 +124,6 @@ const ShoppingCart = () => {
   const orderNumber = Math.floor(Math.random() * 100000);
 
   // Radio Button Data
-
-  const [selectedPayment, setSelectedPayment] = useState(
-    "Direct Bank Transfer",
-  );
-
-  const handlePaymentChange = (e) => {
-    setSelectedPayment(e.target.value);
-  };
 
   return (
     <>
@@ -180,7 +206,7 @@ const ShoppingCart = () => {
                                   to={`/product/${item.productId}`}
                                   onClick={scrollToTop}
                                 >
-                                  <img src={item.frontImg} alt="" />
+                                  <img src={item.productImageUrl} alt="" />
                                 </Link>
                               </div>
                             </td>
@@ -469,45 +495,121 @@ const ShoppingCart = () => {
                 <div className="checkoutDetailsSection">
                   <h4>Billing Details</h4>
                   <div className="checkoutDetailsForm">
-                    <form>
-                      <div className="checkoutDetailsFormRow">
-                        <input type="text" placeholder="First Name" />
-                        <input type="text" placeholder="Last Name" />
+                    {/* Dropdown chọn nhanh địa chỉ */}
+                    {addresses?.length > 0 && (
+                      <div className="savedAddressSelect">
+                        <label>Quick Select Saved Address:</label>
+                        <select
+                          onChange={handleSelectSavedAddress}
+                          defaultValue=""
+                        >
+                          <option value="" disabled>
+                            -- Choose an address --
+                          </option>
+                          {addresses.map((addr) => (
+                            <option key={addr.id} value={addr.id}>
+                              {addr.fullName} - {addr.addressLine}, {addr.ward}
+                            </option>
+                          ))}
+                        </select>
                       </div>
+                    )}
+
+                    <form onSubmit={(e) => e.preventDefault()}>
+                      <div className="checkoutDetailsFormRow">
+                        <input
+                          type="text"
+                          placeholder="First Name"
+                          value={formData.firstName}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              firstName: e.target.value,
+                            })
+                          }
+                        />
+                        <input
+                          type="text"
+                          placeholder="Last Name"
+                          value={formData.lastName}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              lastName: e.target.value,
+                            })
+                          }
+                        />
+                      </div>
+
                       <input
                         type="text"
-                        placeholder="Company Name (optional)"
+                        placeholder="Street Address (Address Line)*"
+                        value={formData.addressLine}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            addressLine: e.target.value,
+                          })
+                        }
                       />
-                      <select name="country" id="country">
-                        <option value="Country / Region" selected disabled>
-                          Country / Region
-                        </option>
-                        <option value="India">India</option>
-                        <option value="Canada">Canada</option>
-                        <option value="United Kingdom">United Kingdom</option>
-                        <option value="United States">United States</option>
-                        <option value="Turkey">Turkey</option>
-                      </select>
-                      <input type="text" placeholder="Street Address*" />
-                      <input type="text" placeholder="" />
-                      <input type="text" placeholder="Town / City *" />
-                      <input type="text" placeholder="Postcode / ZIP *" />
-                      <input type="text" placeholder="Phone *" />
-                      <input type="mail" placeholder="Your Mail *" />
-                      <div className="checkoutDetailsFormCheck">
-                        <label>
-                          <input type="checkbox" />
-                          <p>Create An Account?</p>
-                        </label>
-                        <label>
-                          <input type="checkbox" />
-                          <p>Ship to a different Address</p>
-                        </label>
+
+                      <div className="checkoutDetailsFormRow">
+                        <input
+                          type="text"
+                          placeholder="Ward / Commune *"
+                          value={formData.ward}
+                          onChange={(e) =>
+                            setFormData({ ...formData, ward: e.target.value })
+                          }
+                        />
+                        <input
+                          type="text"
+                          placeholder="District *"
+                          value={formData.district}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              district: e.target.value,
+                            })
+                          }
+                        />
                       </div>
+
+                      <input
+                        type="text"
+                        placeholder="Town / City *"
+                        value={formData.city}
+                        onChange={(e) =>
+                          setFormData({ ...formData, city: e.target.value })
+                        }
+                      />
+
+                      <input
+                        type="text"
+                        placeholder="Postcode / ZIP *"
+                        value={formData.postcode}
+                        onChange={(e) =>
+                          setFormData({ ...formData, postcode: e.target.value })
+                        }
+                      />
+
+                      <input
+                        type="text"
+                        placeholder="Phone *"
+                        value={formData.phone}
+                        onChange={(e) =>
+                          setFormData({ ...formData, phone: e.target.value })
+                        }
+                      />
+
                       <textarea
                         cols={30}
-                        rows={8}
+                        rows={5}
                         placeholder="Order Notes (Optional)"
+                        value={formData.notes}
+                        onChange={(e) =>
+                          setFormData({ ...formData, notes: e.target.value })
+                        }
                       />
                     </form>
                   </div>

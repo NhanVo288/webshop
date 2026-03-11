@@ -89,7 +89,7 @@ const App = () => {
               }
             />
             <Route
-              path="/address"
+              path="/profile"
               element={
                 <PublicRoute>
                   <UserProfile />
