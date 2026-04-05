@@ -127,7 +127,7 @@
   transition: opacity 0.3s linear;
 }
 
-.sdProductImages .sdProduct_back {
+/* .sdProductImages .sdProduct_back {
   z-index: 1;
   opacity: 0;
   transition: opacity 0.3s linear;
@@ -135,7 +135,7 @@
 
 .sdProductContainer:hover .sdProduct_back {
   opacity: 1;
-}
+} */
 
 .sdProductImages .sdProduct_front {
   z-index: 2;
@@ -143,9 +143,9 @@
   cursor: pointer;
 }
 
-.sdProductContainer:hover .sdProduct_front {
+/* .sdProductContainer:hover .sdProduct_front {
   opacity: 0;
-}
+} */
 
 .sdProductContainer h4 {
   position: relative;

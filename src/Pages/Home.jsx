@@ -13,10 +13,10 @@ const Home = () => {
     <>
       <HeroSection />
       {/* <CollectionBox /> */}
-      <Trendy />
+      {/* <Trendy /> */}
       {/* <DealTimer /> */}
       {/* <Banner /> */}
-      <LimitedEdition />
+      {/* <LimitedEdition /> */}
       {/* <Instagram /> */}
       <Services />
     </>

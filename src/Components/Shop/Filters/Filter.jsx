@@ -16,13 +16,8 @@ const Filter = ({ onFilter }) => {
   const [selectedBrands, setSelectedBrands] = useState([]);
 
   const brandsData = [
-    { name: "Adidas", count: 2 },
-    { name: "Balmain", count: 7 },
-    { name: "Balenciaga", count: 10 },
-    { name: "Burberry", count: 39 },
-    { name: "Kenzo", count: 95 },
-    { name: "Givenchy", count: 1092 },
-    { name: "Zara", count: 48 },
+    { name: "Apple"},
+    { name: "SamSung"},
   ];
 
   // const filterColors = [
@@ -68,20 +63,10 @@ const Filter = ({ onFilter }) => {
   };
 
   const handleBrandChange = (brand) => {
-    const newBrands = selectedBrands.includes(brand)
-      ? selectedBrands.filter((b) => b !== brand)
-      : [...selectedBrands, brand];
-
-    setSelectedBrands(newBrands);
-    emitFilter(
-      buildParams({
-        brands: newBrands,
-        // colors: selectedColors,
-        // sizes: selectedSizes,
-        price: priceRange,
-      })
-    );
-  };
+  const newBrands = [brand]; 
+  setSelectedBrands(newBrands);
+  emitFilter(buildParams({ brands: newBrands }));
+};
 
   // const handleColorChange = (color) => {
   //   const newColors = selectedColors.includes(color)
@@ -147,7 +132,7 @@ const Filter = ({ onFilter }) => {
           <h5 className="filterHeading">Brands</h5>
         </AccordionSummary>
         <AccordionDetails>
-          <div className="searchBar">
+          {/* <div className="searchBar">
             <BiSearch className="searchIcon" size={20} color="#767676" />
             <input
               type="text"
@@ -155,7 +140,7 @@ const Filter = ({ onFilter }) => {
               value={searchTerm}
               onChange={handleSearchChange}
             />
-          </div>
+          </div> */}
           <div className="brandList">
             {filteredBrands.map((brand, index) => (
               <div className="brandItem" key={index}>
@@ -165,7 +150,7 @@ const Filter = ({ onFilter }) => {
                   onChange={() => handleBrandChange(brand.name)}
                 />
                 <label>{brand.name}</label>
-                <span>{brand.count}</span>
+                
               </div>
             ))}
           </div>
@@ -216,7 +201,7 @@ const Filter = ({ onFilter }) => {
       </Accordion> */}
 
       {/* Price */}
-      <Accordion defaultExpanded disableGutters elevation={0}>
+      {/* <Accordion defaultExpanded disableGutters elevation={0}>
         <AccordionSummary expandIcon={<IoIosArrowDown size={20} />}>
           <h5 className="filterHeading">Price</h5>
         </AccordionSummary>
@@ -236,7 +221,7 @@ const Filter = ({ onFilter }) => {
             <p>Max: ${priceRange[1].toLocaleString()}</p>
           </div>
         </AccordionDetails>
-      </Accordion>
+      </Accordion> */}
     </div>
   );
 };

@@ -30,7 +30,7 @@ const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const navigate = useNavigate();
-  const { list, searchLoading } = useSelector((state) => state.product);
+  const { searchItems, searchLoading } = useSelector((state) => state.product);
 
   const [searchTerm, setSearchTerm] = useState("");
   const [showResults, setShowResults] = useState(false);
@@ -40,7 +40,7 @@ const Navbar = () => {
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
       if (searchTerm.trim().length > 0) {
-        dispatch(searchProducts({ query: searchTerm }));
+        dispatch(searchProducts({ keyword: searchTerm }));
         setShowResults(true);
       } else {
         setShowResults(false);
@@ -55,6 +55,7 @@ const Navbar = () => {
     const handleClickOutside = (event) => {
       if (searchRef.current && !searchRef.current.contains(event.target)) {
         setShowResults(false);
+        setSearchTerm('')
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
@@ -138,17 +139,20 @@ const Navbar = () => {
               <div className="searchDropdown">
                 {searchLoading ? (
                   <div className="searchStatus">Searching...</div>
-                ) : StoreData.length > 0 ? (
-                  StoreData.map((product) => (
+                ) : searchItems.length > 0 ? (
+                  searchItems.map((product) => (
                     <div
-                      key={product.productID}
+                      key={product.id}
                       className="searchResultItem"
-                      onClick={() => handleResultClick(product.productID)}
+                      onClick={() => handleResultClick(product.id)}
                     >
-                      <img src={product.frontImg} alt={product.productName} />
+                      <img
+                        src={product.images?.[0]?.imageUrl}
+                        alt={product.name}
+                      />
                       <div className="searchResultInfo">
-                        <p className="resName">{product.productName}</p>
-                        <p className="resPrice">${product.productPrice}</p>
+                        <p className="resName">{product.name}</p>
+                        <p className="resPrice">${product.price}</p>
                       </div>
                     </div>
                   ))
@@ -171,7 +175,7 @@ const Navbar = () => {
               <RiShoppingBagLine size={22} />
             </Badge>
           </Link>
-          <FiHeart size={22} onClick={scrollToTop} />
+          {/* <FiHeart size={22} onClick={scrollToTop} /> */}
           {/* <RiMenu2Line size={22} /> */}
         </div>
       </nav>

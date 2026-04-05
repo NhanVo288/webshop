@@ -5,7 +5,6 @@ import {
   searchProduct,
 } from "../../api/apiProduct";
 
-
 export const fetchProducts = createAsyncThunk(
   "products/fetch",
   async (params) => {
@@ -39,7 +38,8 @@ const productSlice = createSlice({
   name: "Product",
   initialState: {
     list: [],
-    seachItems: [],
+    searchItems: [],
+    searchPagination: {},
     pagination: {
       totalElements: 0,
       totalPages: 0,
@@ -48,7 +48,7 @@ const productSlice = createSlice({
     detail: null,
     loading: false,
     searchLoading: false,
-    error: null, 
+    error: null,
   },
   reducers: {
     clearDetail: (state) => {
@@ -79,17 +79,21 @@ const productSlice = createSlice({
       .addCase(searchProducts.pending, (state) => {
         state.searchLoading = true;
         state.error = null;
-      })
+      });
+    builder
       .addCase(searchProducts.fulfilled, (state, action) => {
-        state.searchLoading = false;
-        state.seachItems = action.payload;
+        state.searchLoading = false
+        state.searchItems = action.payload.content;
+        state.searchPagination = {
+          totalPages: action.payload.totalPages || 0,
+          pageNumber: action.payload.page || 0,
+        };
       })
       .addCase(searchProducts.rejected, (state, action) => {
         state.searchLoading = false;
         state.error = action.payload;
       })
 
-      
       .addCase(fetchProductDetail.pending, (state) => {
         state.loading = true;
       })

@@ -50,7 +50,7 @@ const UserMenu = () => {
           <button
             className="menuItem"
             onClick={() => {
-              navigate("/profile");
+              navigate("/order");
               setOpen(false);
             }}
           >

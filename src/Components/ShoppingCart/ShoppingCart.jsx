@@ -90,7 +90,7 @@ const ShoppingCart = () => {
         processPayment({
           orderId: order.id,
           amount: order.totalAmount,
-          paymentMethod: "VNPAY",
+          paymentMethod: selectedPayment,
         }),
       ).unwrap();
       handleTabClick("cartTab3");

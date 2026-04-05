@@ -11,34 +11,75 @@ import { IoFilterSharp, IoClose } from "react-icons/io5";
 import { FaAngleRight, FaAngleLeft } from "react-icons/fa6";
 import { FaCartPlus } from "react-icons/fa";
 import toast from "react-hot-toast";
-import { fetchProducts } from "../../../Features/Product/productSlice";
+import {
+  fetchProducts,
+  searchProducts,
+} from "../../../Features/Product/productSlice";
 import Pagination from "../../Pagination/Pagination";
 
 const ShopDetails = () => {
   const dispatch = useDispatch();
-
+  const { list, loading, pagination, searchItems, searchPagination } =
+    useSelector((state) => state.product);
+  const [isFiltering, setIsFiltering] = useState(false);
+  const [currentFilter, setCurrentFilter] = useState({});
+  const currentPagination = isFiltering ? searchPagination : pagination;
   const [currentPage, setCurrentPage] = useState(0);
-  const { list, loading, pagination } = useSelector((state) => state.product);
   const cartItems = useSelector((state) => state.cart.items);
 
   const [wishList, setWishList] = useState({});
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-
-  useEffect(() => {
-    dispatch(fetchProducts({ page: currentPage, size: 6 }));
-  }, [dispatch,currentPage]);
+  const displayList = isFiltering ? searchItems || [] : list || [];
 
   const handleFilter = (params) => {
-    dispatch(fetchProducts(params));
+    setCurrentPage(0);
+    setIsFiltering(true);
+    setCurrentFilter(params);
+
+    dispatch(
+      searchProducts({
+        ...params,
+        page: 0,
+        size: 6,
+      }),
+    );
   };
   const onChangePage = (newPage) => {
-    setCurrentPage(newPage-1);
+    setCurrentPage(newPage - 1);
   };
-  // Xử lý Sorting (Backend nhận tham số sort)
   const handleSortChange = (e) => {
-    const sortValue = e.target.value;
-    //"price,asc" hoặc "name,desc" tùy theo Backend hỗ trợ
-    dispatch(fetchProducts({ sort: [sortValue] }));
+    const value = e.target.value;
+
+    const [sortBy, sortDir] = value.split(",");
+
+    setCurrentPage(0);
+
+    if (isFiltering) {
+      const newFilter = {
+        ...currentFilter,
+        sortBy,
+        sortDir,
+      };
+
+      setCurrentFilter(newFilter);
+
+      dispatch(
+        searchProducts({
+          ...newFilter,
+          page: 0,
+          size: 6,
+        }),
+      );
+    } else {
+      dispatch(
+        fetchProducts({
+          sortBy,
+          sortDir,
+          page: 0,
+          size: 6,
+        }),
+      );
+    }
   };
 
   // Xử lý chuyển trang
@@ -58,11 +99,23 @@ const ShopDetails = () => {
   const toggleDrawer = () => setIsDrawerOpen(!isDrawerOpen);
   const closeDrawer = () => setIsDrawerOpen(false);
 
-  const handleAddToCart = ({productId, quantity}) => {
-      dispatch(getCartInfo(productId))
-      dispatch(addToCart({productId, quantity}));
-    
+  const handleAddToCart = ({ productId, quantity }) => {
+    dispatch(getCartInfo(productId));
+    dispatch(addToCart({ productId, quantity }));
   };
+  useEffect(() => {
+    if (isFiltering) {
+      dispatch(
+        searchProducts({
+          ...currentFilter,
+          page: currentPage,
+          size: 6,
+        }),
+      );
+    } else {
+      dispatch(fetchProducts({ page: currentPage, size: 6 }));
+    }
+  }, [dispatch, currentPage, isFiltering, currentFilter]);
   return (
     <>
       <div className="shopDetails">
@@ -82,7 +135,7 @@ const ShopDetails = () => {
 
               <div className="shopDetailsSort">
                 <select name="sort" id="sort" onChange={handleSortChange}>
-                  <option value="name,asc">Default Sorting</option>
+                  <option value="name,desc">Default Sorting</option>
                   <option value="price,asc">Price, Low to high</option>
                   <option value="price,desc">Price, high to low</option>
                   <option value="createdAt,desc">Newest</option>
@@ -95,7 +148,7 @@ const ShopDetails = () => {
             ) : (
               <div className="shopDetailsProducts">
                 <div className="shopDetailsProductsContainer">
-                  {list.map((product) => (
+                  {displayList.map((product) => (
                     <div className="sdProductContainer" key={product.id}>
                       <div className="sdProductImages">
                         <Link
@@ -103,7 +156,9 @@ const ShopDetails = () => {
                           onClick={scrollToTop}
                         >
                           <img
-                            src={product.images?.[0]?.imageUrl || "placeholder.jpg"}
+                            src={
+                              product.images?.[0]?.imageUrl || "placeholder.jpg"
+                            }
                             alt={product.name}
                             className="sdProduct_front"
                           />
@@ -114,13 +169,25 @@ const ShopDetails = () => {
                             className="sdProduct_back"
                           /> */}
                         </Link>
-                        <h4 onClick={() => handleAddToCart({productId: product.id, quantity: 1})}>
+                        <h4
+                          onClick={() =>
+                            handleAddToCart({
+                              productId: product.id,
+                              quantity: 1,
+                            })
+                          }
+                        >
                           Add to Cart
                         </h4>
                       </div>
                       <div
                         className="sdProductImagesCart"
-                        onClick={() => handleAddToCart({productId: product.id, quantity: 1})}
+                        onClick={() =>
+                          handleAddToCart({
+                            productId: product.id,
+                            quantity: 1,
+                          })
+                        }
                       >
                         <FaCartPlus />
                       </div>
@@ -143,8 +210,6 @@ const ShopDetails = () => {
                             <h5>{product.name}</h5>
                           </Link>
                           <p>${product.price}</p>
-                          {/* Stock display */}
-                          <small>Stock: {product.stock}</small>
                         </div>
                       </div>
                     </div>
@@ -155,7 +220,7 @@ const ShopDetails = () => {
 
             <Pagination
               currentPage={currentPage + 1}
-              totalPages={pagination.totalPages}
+              totalPages={currentPagination.totalPages || 0}
               onPageChange={onChangePage}
             />
             {/* <div className="shopDetailsPagination">

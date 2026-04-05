@@ -131,22 +131,22 @@ const Product = () => {
       <div className="productSection">
         <div className="productShowCase">
           <div className="productGallery">
-            <div className="productThumb">
+            {/* <div className="productThumb">
               <img src={product1} onClick={() => setCurrentImg(0)} alt="" />
               <img src={product2} onClick={() => setCurrentImg(1)} alt="" />
               <img src={product3} onClick={() => setCurrentImg(2)} alt="" />
               <img src={product4} onClick={() => setCurrentImg(3)} alt="" />
-            </div>
+            </div> */}
             <div className="productFullImg">
-              <img src={productImg[currentImg]} alt="" />
-              <div className="buttonsGroup">
+              <img src={detail?.images?.[0]?.imageUrl || "placeholder.jpg"} alt="" />
+              {/* <div className="buttonsGroup">
                 <button onClick={prevImg} className="directionBtn">
                   <GoChevronLeft size={18} />
                 </button>
                 <button onClick={nextImg} className="directionBtn">
                   <GoChevronRight size={18} />
                 </button>
-              </div>
+              </div> */}
             </div>
           </div>
           <div className="productDetails">
@@ -185,7 +185,7 @@ const Product = () => {
                 {detail?.description}
               </p>
             </div>
-            <div className="productSizeColor">
+            {/* <div className="productSizeColor">
               <div className="productSize">
                 <p>Sizes</p>
                 <div className="sizeBtn">
@@ -242,7 +242,7 @@ const Product = () => {
                   ))}
                 </div>
               </div>
-            </div>
+            </div> */}
             <div className="productCartQuantity">
               <div className="productQuantity">
                 <button onClick={decrement}>-</button>
@@ -258,12 +258,12 @@ const Product = () => {
               </div>
             </div>
             <div className="productWishShare">
-              <div className="productWishList">
+              {/* <div className="productWishList">
                 <button onClick={handleWishClick}>
                   <FiHeart color={clicked ? "red" : ""} size={17} />
                   <p>Add to Wishlist</p>
                 </button>
-              </div>
+              </div> */}
               <div className="productShare">
                 <PiShareNetworkLight size={22} />
                 <p>Share</p>
